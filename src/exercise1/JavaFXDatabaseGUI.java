@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.0.4 added event handlers to dynamically expand and collapse TitledPanes
+ * @version 0.1.0 completed initial GUI
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -71,6 +71,7 @@ public class JavaFXDatabaseGUI extends Application {
 		playerAndGameTab.setTooltip(new Tooltip("Click on this view the games each player has played!"));
 
 		// GAME PANE
+		// =============================================================================================
 		// creating and configuring titled panes
 		TitledPane insertGameTitledPane;
 		TitledPane removeGameTitledPane;
@@ -132,6 +133,7 @@ public class JavaFXDatabaseGUI extends Application {
 		gamePane.add(viewGameTitledPane, 0, 2);
 
 		// PLAYER PANE
+		// ===========================================================================================
 		// creating and configuring titled panes
 		TitledPane insertPlayerTitledPane = new TitledPane();
 		insertPlayerTitledPane.setTooltip(new Tooltip("Open this section to add a new player to the database!"));
@@ -189,6 +191,7 @@ public class JavaFXDatabaseGUI extends Application {
 		playerPane.add(viewPlayerTitledPane, 0, 2);
 
 		// PLAYER AND GAME PANE
+		// ===================================================================================
 		// creating and configuring titled panes
 		TitledPane viewPlayerAndGameTitledPane = new TitledPane();
 		viewPlayerAndGameTitledPane.setTooltip(
@@ -211,6 +214,8 @@ public class JavaFXDatabaseGUI extends Application {
 		Scene scene = new Scene(tabbedPane);
 		primaryStage.setTitle("Game Management Application");
 		primaryStage.setScene(scene);
+		primaryStage.setHeight(600);
+		primaryStage.setWidth(800);
 		// primaryStage.setResizable(false);
 		primaryStage.show();
 	}
