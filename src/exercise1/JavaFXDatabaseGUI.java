@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.0.3 added TitledPanes to every TabPane
+ * @version 0.0.4 added event handlers to dynamically expand and collapse TitledPanes
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -72,23 +72,59 @@ public class JavaFXDatabaseGUI extends Application {
 
 		// GAME PANE
 		// creating and configuring titled panes
-		TitledPane insertGameTitledPane = new TitledPane();
+		TitledPane insertGameTitledPane;
+		TitledPane removeGameTitledPane;
+		TitledPane viewGameTitledPane;
+
+		insertGameTitledPane = new TitledPane();
 		insertGameTitledPane.setTooltip(new Tooltip("Open this section to add a new game to the database!"));
 		insertGameTitledPane.setExpanded(false);
 		insertGameTitledPane.setText("Add New Game");
 		insertGameTitledPane.setContent(new Label("TEST"));
 
-		TitledPane removeGameTitledPane = new TitledPane();
+		removeGameTitledPane = new TitledPane();
 		removeGameTitledPane.setTooltip(new Tooltip("Open this section to remove a game from the database!"));
 		removeGameTitledPane.setExpanded(false);
 		removeGameTitledPane.setText("Remove A Game");
 		removeGameTitledPane.setContent(new Label("TEST"));
 
-		TitledPane viewGameTitledPane = new TitledPane();
+		viewGameTitledPane = new TitledPane();
 		viewGameTitledPane.setTooltip(new Tooltip("Open this section to view games in the database!"));
 		viewGameTitledPane.setExpanded(false);
 		viewGameTitledPane.setText("View All Games");
 		viewGameTitledPane.setContent(new Label("TEST"));
+
+		// adding event handlers
+		// Collapse other titled panes when expanding current one
+		insertGameTitledPane.expandedProperty().addListener(e -> {
+			if (insertGameTitledPane.isExpanded()) {
+				removeGameTitledPane.setExpanded(false);
+				viewGameTitledPane.setExpanded(false);
+			}
+		});
+
+		removeGameTitledPane.expandedProperty().addListener(e -> {
+			if (removeGameTitledPane.isExpanded()) {
+				insertGameTitledPane.setExpanded(false);
+				viewGameTitledPane.setExpanded(false);
+			}
+		});
+
+		viewGameTitledPane.expandedProperty().addListener(e -> {
+			if (viewGameTitledPane.isExpanded()) {
+				removeGameTitledPane.setExpanded(false);
+				insertGameTitledPane.setExpanded(false);
+			}
+		});
+
+		// collapse all panes when selecting another tab
+		gameTab.selectedProperty().addListener(e -> {
+			if (!gameTab.isSelected()) {
+				insertGameTitledPane.setExpanded(false);
+				removeGameTitledPane.setExpanded(false);
+				viewGameTitledPane.setExpanded(false);
+			}
+		});
 
 		// adding titled panes
 		gamePane.add(insertGameTitledPane, 0, 0);
@@ -115,6 +151,38 @@ public class JavaFXDatabaseGUI extends Application {
 		viewPlayerTitledPane.setText("View All Players");
 		viewPlayerTitledPane.setContent(new Label("TEST"));
 
+		// adding event handlers
+		// Collapse other titled panes when expanding current one
+		insertPlayerTitledPane.expandedProperty().addListener(e -> {
+			if (insertPlayerTitledPane.isExpanded()) {
+				removePlayerTitledPane.setExpanded(false);
+				viewPlayerTitledPane.setExpanded(false);
+			}
+		});
+
+		removePlayerTitledPane.expandedProperty().addListener(e -> {
+			if (removePlayerTitledPane.isExpanded()) {
+				insertPlayerTitledPane.setExpanded(false);
+				viewPlayerTitledPane.setExpanded(false);
+			}
+		});
+
+		viewPlayerTitledPane.expandedProperty().addListener(e -> {
+			if (viewPlayerTitledPane.isExpanded()) {
+				removePlayerTitledPane.setExpanded(false);
+				insertPlayerTitledPane.setExpanded(false);
+			}
+		});
+
+		// collapse all panes when selecting another tab
+		playerTab.selectedProperty().addListener(e -> {
+			if (!playerTab.isSelected()) {
+				insertPlayerTitledPane.setExpanded(false);
+				removePlayerTitledPane.setExpanded(false);
+				viewPlayerTitledPane.setExpanded(false);
+			}
+		});
+
 		// adding titled panes
 		playerPane.add(insertPlayerTitledPane, 0, 0);
 		playerPane.add(removePlayerTitledPane, 0, 1);
@@ -129,6 +197,13 @@ public class JavaFXDatabaseGUI extends Application {
 		viewPlayerAndGameTitledPane.setText("View Games and its Players");
 		viewPlayerAndGameTitledPane.setContent(new Label("TEST"));
 
+		// collapse all panes when selecting another tab
+		playerAndGameTab.selectedProperty().addListener(e -> {
+			if (!playerAndGameTab.isSelected()) {
+				viewPlayerAndGameTitledPane.setExpanded(false);
+			}
+		});
+
 		// adding titled panes
 		playerAndGamePane.add(viewPlayerAndGameTitledPane, 0, 0);
 
@@ -136,7 +211,7 @@ public class JavaFXDatabaseGUI extends Application {
 		Scene scene = new Scene(tabbedPane);
 		primaryStage.setTitle("Game Management Application");
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
+		// primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 
