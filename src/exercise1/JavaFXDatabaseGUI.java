@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.1.0 completed initial GUI
+ * @version 0.1.1 moved all variables to the top of the class (for refactoring purposes later)
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -24,29 +24,44 @@ import javafx.stage.Stage;
  */
 
 public class JavaFXDatabaseGUI extends Application {
-
+	// INSTANCE VARIABLES
+			TabPane tabbedPane;
+			Tab gameTab;
+			Tab playerTab;
+			Tab playerAndGameTab;
+			GridPane gamePane;
+			GridPane playerPane;
+			GridPane playerAndGamePane;
+			TitledPane insertGameTitledPane;
+			TitledPane removeGameTitledPane;
+			TitledPane viewGameTitledPane;
+			TitledPane insertPlayerTitledPane;
+			TitledPane removePlayerTitledPane;
+			TitledPane viewPlayerTitledPane;
+			TitledPane viewPlayerAndGameTitledPane;
+			
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) throws Exception {		
 		// TabPane, JTabbedPane equivalent, configuration
-		TabPane tabbedPane = new TabPane();
-		Tab gameTab = new Tab();
-		Tab playerTab = new Tab();
-		Tab playerAndGameTab = new Tab();
+		tabbedPane = new TabPane();
+		gameTab = new Tab();
+		playerTab = new Tab();
+		playerAndGameTab = new Tab();
 
 		// GridPanes configuration
-		GridPane gamePane = new GridPane();
+		gamePane = new GridPane();
 		gamePane.setAlignment(Pos.CENTER);
 		gamePane.setHgap(55);
 		gamePane.setVgap(10);
 		gamePane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
 
-		GridPane playerPane = new GridPane();
+		playerPane = new GridPane();
 		playerPane.setAlignment(Pos.CENTER);
 		playerPane.setHgap(55);
 		playerPane.setVgap(10);
 		playerPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
 
-		GridPane playerAndGamePane = new GridPane();
+		playerAndGamePane = new GridPane();
 		playerAndGamePane.setAlignment(Pos.CENTER);
 		playerAndGamePane.setHgap(55);
 		playerAndGamePane.setVgap(10);
@@ -73,10 +88,6 @@ public class JavaFXDatabaseGUI extends Application {
 		// GAME PANE
 		// =============================================================================================
 		// creating and configuring titled panes
-		TitledPane insertGameTitledPane;
-		TitledPane removeGameTitledPane;
-		TitledPane viewGameTitledPane;
-
 		insertGameTitledPane = new TitledPane();
 		insertGameTitledPane.setTooltip(new Tooltip("Open this section to add a new game to the database!"));
 		insertGameTitledPane.setExpanded(false);
@@ -135,19 +146,19 @@ public class JavaFXDatabaseGUI extends Application {
 		// PLAYER PANE
 		// ===========================================================================================
 		// creating and configuring titled panes
-		TitledPane insertPlayerTitledPane = new TitledPane();
+		insertPlayerTitledPane = new TitledPane();
 		insertPlayerTitledPane.setTooltip(new Tooltip("Open this section to add a new player to the database!"));
 		insertPlayerTitledPane.setExpanded(false);
 		insertPlayerTitledPane.setText("Add New Player");
 		insertPlayerTitledPane.setContent(new Label("TEST"));
 
-		TitledPane removePlayerTitledPane = new TitledPane();
+		removePlayerTitledPane = new TitledPane();
 		removePlayerTitledPane.setTooltip(new Tooltip("Open this section to remove a player from the database!"));
 		removePlayerTitledPane.setExpanded(false);
 		removePlayerTitledPane.setText("Remove A Player");
 		removePlayerTitledPane.setContent(new Label("TEST"));
 
-		TitledPane viewPlayerTitledPane = new TitledPane();
+		viewPlayerTitledPane = new TitledPane();
 		viewPlayerTitledPane.setTooltip(new Tooltip("Open this section to view players in the database!"));
 		viewPlayerTitledPane.setExpanded(false);
 		viewPlayerTitledPane.setText("View All Players");
@@ -193,7 +204,7 @@ public class JavaFXDatabaseGUI extends Application {
 		// PLAYER AND GAME PANE
 		// ===================================================================================
 		// creating and configuring titled panes
-		TitledPane viewPlayerAndGameTitledPane = new TitledPane();
+		viewPlayerAndGameTitledPane = new TitledPane();
 		viewPlayerAndGameTitledPane.setTooltip(
 				new Tooltip("Open this section to view the games and players who played them\nin the database!"));
 		viewPlayerAndGameTitledPane.setExpanded(false);
