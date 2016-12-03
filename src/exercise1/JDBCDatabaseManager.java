@@ -40,7 +40,7 @@ public class JDBCDatabaseManager {
 	// Public Methods
 	// CUD for Game database
 	public void insertIntoGame(String title) {
-
+		
 	}
 
 	// CUD for Player database
