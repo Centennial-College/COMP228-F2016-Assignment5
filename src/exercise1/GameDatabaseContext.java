@@ -8,8 +8,8 @@ import javafx.collections.ObservableList;
 /**
  * @file GameDatabaseContext.java
  * @author Kevin Ma | #: 300867968
- * @date December 3, 2016
- * @version 0.3.0 completely redesigned GUI
+ * @date December 4, 2016
+ * @version 0.3.3 selecting a row in the gameTable populates the modify/remove textfields
  * @description This class handles CRUD operations on the Game, Player, and
  *              PlayerAndGame tables in the database.
  * 
@@ -46,7 +46,7 @@ public class GameDatabaseContext {
 
 	// Public Methods
 	// CRUD for Game database
-	public ObservableList<Game> selectFromGame() {
+	public ObservableList<Game> selectAllFromGame() {
 		gameList.clear();
 		try {
 			pst = conn.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game];");
@@ -60,6 +60,22 @@ public class GameDatabaseContext {
 			System.out.println("ERROR - Faild to select games");
 		}
 		return gameList;
+	}
+
+	public Game selectAGame(int id) {
+		Game g = null;
+		try {
+			pst = conn.prepareStatement(
+					"select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where [game_id] = ?");
+			pst.setInt(1, id);
+			rs = pst.executeQuery();
+			rs.next();
+			g = new Game(rs.getInt(1));
+			g.setGameTitle(rs.getString(1));
+		} catch (SQLException e) {
+			System.out.println("ERROR - Faild to select game with id " + id);
+		}
+		return g;
 	}
 
 	public int insertIntoGame(String title) {

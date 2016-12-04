@@ -21,7 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTracker.java
  * @author Kevin Ma | #: 300867968
  * @date December 4, 2016
- * @version 0.3.2 added event listeners for the add/delete/update buttons
+ * @version 0.3.3 selecting a row in the gameTable populates the modify/remove textfields
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -148,23 +148,9 @@ public class OnlineGameTracker extends Application {
 		deleteBtn = new Button("Delete");
 		updateBtn = new Button("Update");
 
-		// Button Event Handlers
-		addBtn.setOnAction(e -> {
-			gameInputLabel.setText("Successfully added 'Dota' to the Game table.");
-			gameInputMessageHBox.setManaged(true);
-		});
-		deleteBtn.setOnAction(e -> {
-			gameModifyLabel.setText("Successfully deleted 'Dota' from the Game table.");
-			gameModifyMessageHBox.setManaged(true);
-		});
-		updateBtn.setOnAction(e -> {
-			gameModifyLabel.setText("Successfully modified 'Dota' in the Game table.");
-			gameModifyMessageHBox.setManaged(true);
-		});
-
 		// Game Table
 		gameTable = new TableView<>();
-		gameTable.setItems(db.selectFromGame());
+		gameTable.setItems(db.selectAllFromGame());
 		gameTable.getColumns().addAll(gameIdColum, gameTitleColumn);
 
 		// Adding textfields and buttons to modify or delete a game from the db
@@ -219,6 +205,29 @@ public class OnlineGameTracker extends Application {
 			} else
 				// hides the message when switching to another titled pane
 				gameInputMessageHBox.setManaged(false);
+		});
+
+		// TableView Event Handlers
+		gameTable.getSelectionModel().selectedItemProperty().addListener(e -> {
+			Game tmpGame = gameTable.getSelectionModel().getSelectedItem();
+			gameIdModifyTF.setText(tmpGame.getGameId() + "");
+			gameTitleModifyTF.setText(tmpGame.getGameTitle());
+		});
+
+		// Button Event Handlers
+		addBtn.setOnAction(e -> {
+			gameInputLabel.setText("Successfully added 'Dota' to the Game table.");
+			gameInputMessageHBox.setManaged(true);
+		});
+		deleteBtn.setOnAction(e -> {
+			gameModifyLabel.setText("Successfully deleted 'Dota' from the Game table.");
+			gameModifyMessageHBox.setManaged(true);
+		});
+		updateBtn.setOnAction(e -> {
+			Game tmpGame = db.selectAGame(2);
+			gameIdModifyTF.setText(db.selectAGame(2).getGameId() + "");
+			gameModifyLabel.setText("Successfully modified the game #" + tmpGame.getGameId() + " in the Game table.");
+			gameModifyMessageHBox.setManaged(true);
 		});
 
 		resetGameTab();

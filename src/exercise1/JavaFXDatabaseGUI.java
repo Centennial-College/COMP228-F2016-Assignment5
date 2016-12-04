@@ -216,7 +216,7 @@ public class JavaFXDatabaseGUI extends Application {
 		// gameTab.
 
 		// data src binding
-		gameTable.setItems(db.selectFromGame());
+		gameTable.setItems(db.selectAllFromGame());
 
 		// adding event handlers for GAME PANE
 		// ---------------------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ public class JavaFXDatabaseGUI extends Application {
 
 		viewGameTitledPane.expandedProperty().addListener(e -> {
 			if (viewGameTitledPane.isExpanded()) {
-				gameTable.setItems(db.selectFromGame());
+				gameTable.setItems(db.selectAllFromGame());
 
 				removeGameTitledPane.setExpanded(false);
 				insertGameTitledPane.setExpanded(false);
