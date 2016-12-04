@@ -21,7 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTracker.java
  * @author Kevin Ma | #: 300867968
  * @date December 4, 2016
- * @version 0.3.1 refactored code into separate methods
+ * @version 0.3.2 added event listeners for the add/delete/update buttons
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -36,7 +36,7 @@ public class OnlineGameTracker extends Application {
 	TabPane tabbedPane;
 	GameDatabaseContext db; // used to connect to the database
 
-	// Tab that allows manipulation to Game table
+	// Tab that allows manipulation of the Game table
 	// =============================================================================================
 	Tab gameTab;
 	VBox gameVBox; // contents of game tab in a vertical column
@@ -70,11 +70,11 @@ public class OnlineGameTracker extends Application {
 	HBox gameInputMessageHBox;
 	Label gameInputLabel;
 
-	// Tab that allows manipulation to Player table
+	// Tab that allows manipulation of the Player table
 	// =============================================================================================
 	Tab playerTab;
 
-	// Tab that allows manipulation to PlayerAndGame table
+	// Tab that allows manipulation of the PlayerAndGame table
 	// =============================================================================================
 	Tab playerAndGameTab;
 
@@ -106,9 +106,9 @@ public class OnlineGameTracker extends Application {
 		window.show();
 	}
 
+	// GAME TAB METHODS
+	// =============================================================================================
 	private void initializeGameTab() {
-		// GAME TAB
-		// =============================================================================================
 		// Game Id Column
 		gameIdColum = new TableColumn<>("Game Id");
 		gameIdColum.setMinWidth(100);
@@ -150,13 +150,16 @@ public class OnlineGameTracker extends Application {
 
 		// Button Event Handlers
 		addBtn.setOnAction(e -> {
-
+			gameInputLabel.setText("Successfully added 'Dota' to the Game table.");
+			gameInputMessageHBox.setManaged(true);
 		});
 		deleteBtn.setOnAction(e -> {
-
+			gameModifyLabel.setText("Successfully deleted 'Dota' from the Game table.");
+			gameModifyMessageHBox.setManaged(true);
 		});
 		updateBtn.setOnAction(e -> {
-
+			gameModifyLabel.setText("Successfully modified 'Dota' in the Game table.");
+			gameModifyMessageHBox.setManaged(true);
 		});
 
 		// Game Table
