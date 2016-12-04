@@ -21,8 +21,7 @@ import javafx.stage.Stage;
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.1.1 moved all variables to the top of the class (for refactoring
- *          purposes later)
+ * @version 0.2.1 implemented insertIntoGame functionality
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -34,6 +33,7 @@ public class JavaFXDatabaseGUI extends Application {
 	// =============================================================================================
 	// TabPane is main container that is assigned -> Scene -> primaryStage
 	TabPane tabbedPane;
+	JDBCDatabaseManager db;
 
 	// Tabs -> TabPane
 	// Variables for Game View of Application
@@ -76,6 +76,7 @@ public class JavaFXDatabaseGUI extends Application {
 		gameTab = new Tab();
 		playerTab = new Tab();
 		playerAndGameTab = new Tab();
+		db = new JDBCDatabaseManager();
 
 		// GridPanes configuration
 		gamePane = new GridPane();
@@ -143,7 +144,10 @@ public class JavaFXDatabaseGUI extends Application {
 		insertGameBtn.setTooltip(
 				new Tooltip("Click on the button to add the game with the entered title into the database!"));
 		insertGameBtn.setOnAction(e -> {
-			insertGameLabel.setText("Added new game!");
+//			insertGameLabel.setText("Added new game!");
+			insertGameLabel
+					.setText(String.format("Added %d new game!", db.insertIntoGame(gameTitleTextField.getText())));
+
 			insertGameLabel.setManaged(true);
 		});
 
@@ -163,7 +167,7 @@ public class JavaFXDatabaseGUI extends Application {
 		viewGameTitledPane.setText("View All Games");
 		viewGameTitledPane.setContent(new Label("TEST"));
 
-		// configuring view game grid pane
+		// configuring insert game grid pane
 		viewGameTitledPane.setContent(viewGameGridPane = new GridPane());
 		viewGameGridPane.setAlignment(Pos.CENTER);
 		viewGameGridPane.setHgap(5);
@@ -172,8 +176,9 @@ public class JavaFXDatabaseGUI extends Application {
 
 		// adding contents of view game grid pane
 		viewGameGridPane.add(gameTable = new TableView(), 0, 0);
-//		gameTable.getColumns().addAll(new TableColumn("Game ID"), new TableColumn("Game Title"));
-//		gameTable.setItems();
+		// gameTable.getColumns().addAll(new TableColumn("Game ID"), new
+		// TableColumn("Game Title"));
+		gameTable.setItems(db.selectFromGame());
 
 		// adding event handlers for GAME PANE
 		// ---------------------------------------------------------------------------------------------
@@ -194,6 +199,8 @@ public class JavaFXDatabaseGUI extends Application {
 
 		viewGameTitledPane.expandedProperty().addListener(e -> {
 			if (viewGameTitledPane.isExpanded()) {
+				gameTable.setItems(db.selectFromGame());
+
 				removeGameTitledPane.setExpanded(false);
 				insertGameTitledPane.setExpanded(false);
 			}
