@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
  * @file JDBCDatabaseManager.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.2.1 implemented insertIntoGame functionality
+ * @version 0.2.2 implemented selectFromGame functionality
  * @description This class handles CRUD operations on the Game and Player tables
  *              in the database.
  * 
@@ -27,7 +27,8 @@ public class JDBCDatabaseManager {
 	// since JDBC 4.0, DriverManager automatically loads and registers all
 	// drivers, thus do not need the following statment and
 	// Class.forName(DRIVER)
-	private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	// private static final String DRIVER =
+	// "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	private static final String DATABSE_URL = "jdbc:sqlserver://localhost:1433;";
 	private static final String DATABASE_USER = "kevin";
 	private static final String DATABASE_PASSWORD = "kevin";
@@ -36,14 +37,9 @@ public class JDBCDatabaseManager {
 	public JDBCDatabaseManager() {
 		// Initializes the connection with the SQL database
 		try {
-			Class.forName(DRIVER);
-
 			gameList = FXCollections.observableArrayList();
 			conn = DriverManager.getConnection(DATABSE_URL, DATABASE_USER, DATABASE_PASSWORD);
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -53,7 +49,7 @@ public class JDBCDatabaseManager {
 	public ObservableList<Game> selectFromGame() {
 		gameList.clear();
 		try {
-			pst = conn.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game]");
+			pst = conn.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game];");
 			rs = pst.executeQuery();
 			while (rs.next()) {
 				gameRecord = new Game(rs.getInt(1));

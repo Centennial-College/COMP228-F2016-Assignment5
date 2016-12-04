@@ -13,6 +13,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -21,7 +23,7 @@ import javafx.stage.Stage;
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.2.1 implemented insertIntoGame functionality
+ * @version 0.2.2 implemented selectFromGame functionality
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -51,7 +53,9 @@ public class JavaFXDatabaseGUI extends Application {
 
 	TitledPane viewGameTitledPane;
 	GridPane viewGameGridPane;
-	TableView gameTable;
+	TableView<Game> gameTable;
+	TableColumn<Game, Integer> gameIdTableColumn;
+	TableColumn<Game, String> gameTitleTableColumn;
 
 	// Variables for Player View of Application
 	// ---------------------------------------------------------------------------------------------
@@ -115,6 +119,9 @@ public class JavaFXDatabaseGUI extends Application {
 		playerAndGameTab.setText("Players and Games");
 		playerAndGameTab.setTooltip(new Tooltip("Click on this view the games each player has played!"));
 
+		// prevent closing of tabs
+		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+
 		// GAME PANE
 		// =============================================================================================
 		// creating and configuring titled panes
@@ -144,7 +151,7 @@ public class JavaFXDatabaseGUI extends Application {
 		insertGameBtn.setTooltip(
 				new Tooltip("Click on the button to add the game with the entered title into the database!"));
 		insertGameBtn.setOnAction(e -> {
-//			insertGameLabel.setText("Added new game!");
+			// insertGameLabel.setText("Added new game!");
 			insertGameLabel
 					.setText(String.format("Added %d new game!", db.insertIntoGame(gameTitleTextField.getText())));
 
@@ -176,8 +183,14 @@ public class JavaFXDatabaseGUI extends Application {
 
 		// adding contents of view game grid pane
 		viewGameGridPane.add(gameTable = new TableView(), 0, 0);
-		// gameTable.getColumns().addAll(new TableColumn("Game ID"), new
-		// TableColumn("Game Title"));
+		// configuring TableView
+		gameTable.getColumns().addAll(gameIdTableColumn = new TableColumn("Game Id"),
+				gameTitleTableColumn = new TableColumn("Game Title"));
+		gameIdTableColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("gameId"));
+		gameIdTableColumn.setSortable(true);
+		gameTitleTableColumn.setCellValueFactory(new PropertyValueFactory<Game, String>("gameTitle"));
+		gameTitleTableColumn.setSortable(true);
+		gameTitleTableColumn.setEditable(true);
 		gameTable.setItems(db.selectFromGame());
 
 		// adding event handlers for GAME PANE
