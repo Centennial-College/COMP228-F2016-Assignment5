@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -20,7 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTracker.java
  * @author Kevin Ma | #: 300867968
  * @date December 4, 2016
- * @version 0.3.0 completely redesigned GUI
+ * @version 0.3.1 refactored code into separate methods
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -36,7 +37,7 @@ public class OnlineGameTracker extends Application {
 	GameDatabaseContext db; // used to connect to the database
 
 	// Tab that allows manipulation to Game table
-	// ---------------------------------------------------------------------------------------------
+	// =============================================================================================
 	Tab gameTab;
 	VBox gameVBox; // contents of game tab in a vertical column
 
@@ -44,24 +45,37 @@ public class OnlineGameTracker extends Application {
 	TableView<Game> gameTable;
 	TableColumn<Game, Integer> gameIdColum;
 	TableColumn<Game, String> gameTitleColumn;
-	TextField gameIdInput;
-	TextField gameTitleInput;
+
+	TitledPane updateOrDeleteGameTitledPane;
+	// ---------------------------------------------------------------------------------------------
+	VBox gameModifyMainBox;
+
+	HBox gameModifyHBox;
 	TextField gameIdModifyTF;
 	TextField gameTitleModifyTF;
-	Button addBtn;
-	Button deleteBtn;
 	Button updateBtn;
-	HBox gameModifyHBox;
-	HBox gameInputHBox;
-	TitledPane updateOrDeleteGameTitledPane;
+	Button deleteBtn;
+
+	HBox gameModifyMessageHBox;
+	Label gameModifyLabel;
+
 	TitledPane addGameTitledPane;
+	// ---------------------------------------------------------------------------------------------
+	VBox gameInputMainBox;
+
+	HBox gameInputHBox;
+	TextField gameTitleInput;
+	Button addBtn;
+
+	HBox gameInputMessageHBox;
+	Label gameInputLabel;
 
 	// Tab that allows manipulation to Player table
-	// ---------------------------------------------------------------------------------------------
+	// =============================================================================================
 	Tab playerTab;
 
 	// Tab that allows manipulation to PlayerAndGame table
-	// ---------------------------------------------------------------------------------------------
+	// =============================================================================================
 	Tab playerAndGameTab;
 
 	public static void main(String[] args) {
@@ -82,6 +96,17 @@ public class OnlineGameTracker extends Application {
 		// Initialize Database Manager
 		db = new GameDatabaseContext();
 
+		// Initialize the UI
+		initializeGameTab();
+
+		// Stage and scene configuration
+		Scene scene = new Scene(tabbedPane);
+		window.setScene(scene);
+		window.setResizable(false);
+		window.show();
+	}
+
+	private void initializeGameTab() {
 		// GAME TAB
 		// =============================================================================================
 		// Game Id Column
@@ -94,15 +119,13 @@ public class OnlineGameTracker extends Application {
 		gameTitleColumn.setMinWidth(300);
 		gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
 
-		// Game Id Textfields
-		gameIdInput = new TextField();
-		gameIdInput.setPromptText("Game Id");
-		gameIdInput.setMinWidth(100);
-
+		// Game Id Textfields - don't need for adding game because sequence
+		// inserts default value
 		gameIdModifyTF = new TextField();
 		gameIdModifyTF.setPromptText("Game Id");
 		gameIdModifyTF.setMinWidth(100);
-		// disabled here to prevent user from changing primary key
+		// disabled here to prevent user from changing primary key - just to
+		// show them
 		gameIdModifyTF.setDisable(true);
 
 		// Game Title Textfields
@@ -113,6 +136,12 @@ public class OnlineGameTracker extends Application {
 		gameTitleModifyTF = new TextField();
 		gameTitleModifyTF.setPromptText("Game Title");
 		gameTitleModifyTF.setMinWidth(300);
+
+		// Game Modify Label
+		gameModifyLabel = new Label();
+
+		// Game Add Label
+		gameInputLabel = new Label();
 
 		// Buttons
 		addBtn = new Button("Add");
@@ -140,37 +169,82 @@ public class OnlineGameTracker extends Application {
 		gameModifyHBox.setPadding(new Insets(10));
 		gameModifyHBox.setSpacing(10);
 		gameModifyHBox.getChildren().addAll(gameIdModifyTF, gameTitleModifyTF, updateBtn, deleteBtn);
-		updateOrDeleteGameTitledPane = new TitledPane("Update/Remove a Game", gameModifyHBox);
 
 		// Adding textfields and buttons to add a new game to the db
 		gameInputHBox = new HBox();
 		gameInputHBox.setPadding(new Insets(10));
 		gameInputHBox.setSpacing(10);
-		gameInputHBox.getChildren().addAll(gameIdInput, gameTitleInput, addBtn);
-		addGameTitledPane = new TitledPane("Add a New Game", gameInputHBox);
+		gameInputHBox.getChildren().addAll(gameTitleInput, addBtn);
+
+		// Adding message labels
+		gameModifyMessageHBox = new HBox();
+		gameModifyMessageHBox.setPadding(new Insets(10));
+		gameModifyMessageHBox.setSpacing(10);
+		gameModifyMessageHBox.getChildren().addAll(gameModifyLabel);
+
+		gameInputMessageHBox = new HBox();
+		gameInputMessageHBox.setPadding(new Insets(10));
+		gameInputMessageHBox.setSpacing(10);
+		gameInputMessageHBox.getChildren().addAll(gameInputLabel);
 
 		// Adding contents to game tab
+		gameModifyMainBox = new VBox();
+		gameInputMainBox = new VBox();
+
+		gameModifyMainBox.getChildren().addAll(gameModifyHBox, gameModifyMessageHBox);
+		gameInputMainBox.getChildren().addAll(gameInputHBox, gameInputMessageHBox);
+
+		updateOrDeleteGameTitledPane = new TitledPane("Update/Remove a Game", gameModifyMainBox);
+		addGameTitledPane = new TitledPane("Add a New Game", gameInputMainBox);
+
 		gameVBox = new VBox();
 		gameVBox.getChildren().addAll(gameTable, updateOrDeleteGameTitledPane, addGameTitledPane);
 		gameTab.setContent(gameVBox);
 
-		// Configuring the titled panes behavior - only one is shown at a time
-		updateOrDeleteGameTitledPane.setExpanded(true);
-		addGameTitledPane.setExpanded(false);
+		// Configuring the titled panes behavior - only one is shown at a time,
+		// other is collapsed
 		updateOrDeleteGameTitledPane.expandedProperty().addListener(e -> {
-			if (updateOrDeleteGameTitledPane.isExpanded())
+			if (updateOrDeleteGameTitledPane.isExpanded()) {
 				addGameTitledPane.setExpanded(false);
+			} else
+				// hides the message when switching to another titled pane
+				gameModifyMessageHBox.setManaged(false);
 		});
 		addGameTitledPane.expandedProperty().addListener(e -> {
-			if (addGameTitledPane.isExpanded())
+			if (addGameTitledPane.isExpanded()) {
 				updateOrDeleteGameTitledPane.setExpanded(false);
+			} else
+				// hides the message when switching to another titled pane
+				gameInputMessageHBox.setManaged(false);
 		});
 
-		// Stage and scene configuration
-		Scene scene = new Scene(tabbedPane);
-		window.setScene(scene);
-		window.setResizable(false);
-		window.show();
+		resetGameTab();
 	}
 
+	/**
+	 * Resets all controls to their predetermined default values on the Game Tab
+	 */
+	private void resetGameTab() {
+
+		// titledpanes default expanded/collapsed display
+		updateOrDeleteGameTitledPane.setExpanded(true);
+		addGameTitledPane.setExpanded(false);
+
+		// initially hide the messages until events triggered
+		gameModifyMessageHBox.setManaged(false);
+		gameInputMessageHBox.setManaged(false);
+
+		// clear all textfields
+		clearGameInputTextFields();
+		clearGameModifyTextFIelds();
+	}
+
+	private void clearGameInputTextFields() {
+		gameTitleInput.clear();
+	}
+
+	private void clearGameModifyTextFIelds() {
+		gameIdModifyTF.clear();
+		gameTitleModifyTF.clear();
+	}
 }
