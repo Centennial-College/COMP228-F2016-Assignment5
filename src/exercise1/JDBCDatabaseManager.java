@@ -5,17 +5,17 @@ import java.sql.*;
 /**
  * @file JDBCDatabaseManager.java
  * @author Kevin Ma | #: 300867968
- * @date December 2, 2016
+ * @date December 3, 2016
  * @version 0.0.1
  * @description This class handles CRUD operations on the Game and Player tables
  *              in the database.
- *              
+ * 
  */
 
 public class JDBCDatabaseManager {
 
 	// Instance variables
-	private PreparedStatement storedProcedure;
+	private PreparedStatement pst;
 	private Connection conn;
 
 	// since JDBC 4.0, DriverManager automatically loads and registers all
@@ -38,12 +38,19 @@ public class JDBCDatabaseManager {
 	}
 
 	// Public Methods
-	// CUD for Game database
-	public void insertIntoGame(String title) {
-		
+	// CRUD for Game database
+//	public void
+	public int insertIntoGame(String title) {
+		try {
+			pst = conn.prepareStatement("insert into [COMP228-F2016-OnlineGameTracker].[dbo].[Game] values(?)");
+			pst.setString(1, title);
+			return pst.executeUpdate();
+		} catch (SQLException e) {
+		}
+		return 0;
 	}
 
-	// CUD for Player database
+	// CRUD for Player database
 	public void insertIntoPlayer(String fname, String lname, String addr, String pcode, String prov, String phone) {
 
 	}

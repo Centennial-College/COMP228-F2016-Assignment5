@@ -4,19 +4,24 @@ import javafx.application.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
  * @file JavaFXDatabaseGUI.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.1.1 moved all variables to the top of the class (for refactoring purposes later)
+ * @version 0.1.1 moved all variables to the top of the class (for refactoring
+ *          purposes later)
  * @description This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game tables in the
  *              database.
@@ -25,23 +30,46 @@ import javafx.stage.Stage;
 
 public class JavaFXDatabaseGUI extends Application {
 	// INSTANCE VARIABLES
-			TabPane tabbedPane;
-			Tab gameTab;
-			Tab playerTab;
-			Tab playerAndGameTab;
-			GridPane gamePane;
-			GridPane playerPane;
-			GridPane playerAndGamePane;
-			TitledPane insertGameTitledPane;
-			TitledPane removeGameTitledPane;
-			TitledPane viewGameTitledPane;
-			TitledPane insertPlayerTitledPane;
-			TitledPane removePlayerTitledPane;
-			TitledPane viewPlayerTitledPane;
-			TitledPane viewPlayerAndGameTitledPane;
-			
+	// =============================================================================================
+	// TabPane is main container that is assigned -> Scene -> primaryStage
+	TabPane tabbedPane;
+
+	// Tabs -> TabPane
+	// Variables for Game View of Application
+	// ---------------------------------------------------------------------------------------------
+	Tab gameTab;
+	GridPane gamePane;
+
+	TitledPane insertGameTitledPane;
+	GridPane insertGameGridPane;
+	Button insertGameBtn;
+	TextField gameTitleTextField;
+	Label insertGameLabel;
+
+	TitledPane removeGameTitledPane;
+
+	TitledPane viewGameTitledPane;
+	GridPane viewGameGridPane;
+	TableView gameTable;
+
+	// Variables for Player View of Application
+	// ---------------------------------------------------------------------------------------------
+	Tab playerTab;
+	GridPane playerPane;
+	TitledPane insertPlayerTitledPane;
+	TitledPane removePlayerTitledPane;
+	TitledPane viewPlayerTitledPane;
+
+	// Variables for PlayerAndGame View of Application
+	// ---------------------------------------------------------------------------------------------
+	Tab playerAndGameTab;
+	GridPane playerAndGamePane;
+	TitledPane viewPlayerAndGameTitledPane;
+
 	@Override
-	public void start(Stage primaryStage) throws Exception {		
+	public void start(Stage primaryStage) throws Exception {
+		// UI SETUP
+		// =============================================================================================
 		// TabPane, JTabbedPane equivalent, configuration
 		tabbedPane = new TabPane();
 		gameTab = new Tab();
@@ -74,11 +102,11 @@ public class JavaFXDatabaseGUI extends Application {
 
 		// configuration of the tabs
 		gameTab.setContent(gamePane);
-		gameTab.setText("Game");
+		gameTab.setText("Games");
 		gameTab.setTooltip(new Tooltip("Click on this tab to add, remove and view games!"));
 
 		playerTab.setContent(playerPane);
-		playerTab.setText("Player");
+		playerTab.setText("Players");
 		playerTab.setTooltip(new Tooltip("Click on this tab to add, remove and view players!"));
 
 		playerAndGameTab.setContent(playerAndGamePane);
@@ -88,25 +116,63 @@ public class JavaFXDatabaseGUI extends Application {
 		// GAME PANE
 		// =============================================================================================
 		// creating and configuring titled panes
+		// add titled pane
+		// ---------------------------------------------------------------------------------------------
 		insertGameTitledPane = new TitledPane();
 		insertGameTitledPane.setTooltip(new Tooltip("Open this section to add a new game to the database!"));
 		insertGameTitledPane.setExpanded(false);
 		insertGameTitledPane.setText("Add New Game");
-		insertGameTitledPane.setContent(new Label("TEST"));
 
+		// configuring insert game grid pane
+		insertGameTitledPane.setContent(insertGameGridPane = new GridPane());
+		insertGameGridPane.setAlignment(Pos.CENTER);
+		insertGameGridPane.setHgap(5);
+		insertGameGridPane.setVgap(5);
+		insertGameGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+
+		// adding contents of insert game grid pane
+		insertGameGridPane.add(new Label("Game Title: "), 0, 0);
+		insertGameGridPane.add(gameTitleTextField = new TextField(), 1, 0);
+		insertGameGridPane.add(insertGameBtn = new Button("Add Game"), 2, 0);
+		insertGameGridPane.add(insertGameLabel = new Label(), 0, 1);
+		insertGameLabel.setManaged(false);
+		insertGameGridPane.setColumnSpan(insertGameLabel, 3);
+
+		// adding event listeners
+		insertGameBtn.setTooltip(
+				new Tooltip("Click on the button to add the game with the entered title into the database!"));
+		insertGameBtn.setOnAction(e -> {
+			insertGameLabel.setText("Added new game!");
+			insertGameLabel.setManaged(true);
+		});
+
+		// remove titled pane
+		// ---------------------------------------------------------------------------------------------
 		removeGameTitledPane = new TitledPane();
 		removeGameTitledPane.setTooltip(new Tooltip("Open this section to remove a game from the database!"));
 		removeGameTitledPane.setExpanded(false);
 		removeGameTitledPane.setText("Remove A Game");
 		removeGameTitledPane.setContent(new Label("TEST"));
 
+		// view titled pane
+		// ---------------------------------------------------------------------------------------------
 		viewGameTitledPane = new TitledPane();
 		viewGameTitledPane.setTooltip(new Tooltip("Open this section to view games in the database!"));
 		viewGameTitledPane.setExpanded(false);
 		viewGameTitledPane.setText("View All Games");
 		viewGameTitledPane.setContent(new Label("TEST"));
 
-		// adding event handlers
+		// configuring insert game grid pane
+		viewGameTitledPane.setContent(viewGameGridPane = new GridPane());
+		viewGameGridPane.setAlignment(Pos.CENTER);
+		viewGameGridPane.setHgap(5);
+		viewGameGridPane.setVgap(5);
+		viewGameGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+
+		// adding contents of insert game grid pane
+
+		// adding event handlers for GAME PANE
+		// ---------------------------------------------------------------------------------------------
 		// Collapse other titled panes when expanding current one
 		insertGameTitledPane.expandedProperty().addListener(e -> {
 			if (insertGameTitledPane.isExpanded()) {
@@ -139,9 +205,9 @@ public class JavaFXDatabaseGUI extends Application {
 		});
 
 		// adding titled panes
-		gamePane.add(insertGameTitledPane, 0, 0);
-		gamePane.add(removeGameTitledPane, 0, 1);
-		gamePane.add(viewGameTitledPane, 0, 2);
+		gamePane.add(viewGameTitledPane, 0, 0);
+		gamePane.add(insertGameTitledPane, 0, 1);
+		gamePane.add(removeGameTitledPane, 0, 2);
 
 		// PLAYER PANE
 		// ===========================================================================================
@@ -164,7 +230,8 @@ public class JavaFXDatabaseGUI extends Application {
 		viewPlayerTitledPane.setText("View All Players");
 		viewPlayerTitledPane.setContent(new Label("TEST"));
 
-		// adding event handlers
+		// adding event handlers for PLAYER PANE
+		// ---------------------------------------------------------------------------------------------
 		// Collapse other titled panes when expanding current one
 		insertPlayerTitledPane.expandedProperty().addListener(e -> {
 			if (insertPlayerTitledPane.isExpanded()) {
@@ -197,9 +264,9 @@ public class JavaFXDatabaseGUI extends Application {
 		});
 
 		// adding titled panes
-		playerPane.add(insertPlayerTitledPane, 0, 0);
-		playerPane.add(removePlayerTitledPane, 0, 1);
-		playerPane.add(viewPlayerTitledPane, 0, 2);
+		playerPane.add(viewPlayerTitledPane, 0, 0);
+		playerPane.add(insertPlayerTitledPane, 0, 1);
+		playerPane.add(removePlayerTitledPane, 0, 2);
 
 		// PLAYER AND GAME PANE
 		// ===================================================================================
