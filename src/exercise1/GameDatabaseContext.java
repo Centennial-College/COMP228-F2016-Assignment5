@@ -6,16 +6,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * @file JDBCDatabaseManager.java
+ * @file GameDatabaseContext.java
  * @author Kevin Ma | #: 300867968
  * @date December 3, 2016
- * @version 0.2.2 implemented selectFromGame functionality
- * @description This class handles CRUD operations on the Game and Player tables
- *              in the database.
+ * @version 0.3.0 completely redesigned GUI
+ * @description This class handles CRUD operations on the Game, Player, and
+ *              PlayerAndGame tables in the database.
  * 
  */
 
-public class JDBCDatabaseManager {
+public class GameDatabaseContext {
 
 	// Instance variables
 	private PreparedStatement pst;
@@ -34,7 +34,7 @@ public class JDBCDatabaseManager {
 	private static final String DATABASE_PASSWORD = "kevin";
 
 	// Constructors
-	public JDBCDatabaseManager() {
+	public GameDatabaseContext() {
 		// Initializes the connection with the SQL database
 		try {
 			gameList = FXCollections.observableArrayList();

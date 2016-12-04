@@ -1,6 +1,7 @@
 package exercise1;
 
 import javafx.application.*;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,12 +10,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -35,7 +39,7 @@ public class JavaFXDatabaseGUI extends Application {
 	// =============================================================================================
 	// TabPane is main container that is assigned -> Scene -> primaryStage
 	TabPane tabbedPane;
-	JDBCDatabaseManager db;
+	GameDatabaseContext db;
 
 	// Tabs -> TabPane
 	// Variables for Game View of Application
@@ -56,6 +60,7 @@ public class JavaFXDatabaseGUI extends Application {
 	TableView<Game> gameTable;
 	TableColumn<Game, Integer> gameIdTableColumn;
 	TableColumn<Game, String> gameTitleTableColumn;
+	TableColumn gameUpdateTableColumn;
 
 	// Variables for Player View of Application
 	// ---------------------------------------------------------------------------------------------
@@ -80,7 +85,7 @@ public class JavaFXDatabaseGUI extends Application {
 		gameTab = new Tab();
 		playerTab = new Tab();
 		playerAndGameTab = new Tab();
-		db = new JDBCDatabaseManager();
+		db = new GameDatabaseContext();
 
 		// GridPanes configuration
 		gamePane = new GridPane();
@@ -172,7 +177,6 @@ public class JavaFXDatabaseGUI extends Application {
 		viewGameTitledPane.setTooltip(new Tooltip("Open this section to view games in the database!"));
 		viewGameTitledPane.setExpanded(false);
 		viewGameTitledPane.setText("View All Games");
-		viewGameTitledPane.setContent(new Label("TEST"));
 
 		// configuring insert game grid pane
 		viewGameTitledPane.setContent(viewGameGridPane = new GridPane());
@@ -184,13 +188,34 @@ public class JavaFXDatabaseGUI extends Application {
 		// adding contents of view game grid pane
 		viewGameGridPane.add(gameTable = new TableView(), 0, 0);
 		// configuring TableView
+		gameTable.setMinWidth(317);
 		gameTable.getColumns().addAll(gameIdTableColumn = new TableColumn("Game Id"),
-				gameTitleTableColumn = new TableColumn("Game Title"));
+				gameTitleTableColumn = new TableColumn("Game Title"),
+				gameUpdateTableColumn = new TableColumn("Game Update"));
+
+		// gameid column
 		gameIdTableColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("gameId"));
-		gameIdTableColumn.setSortable(true);
+
+		// gametitle column
 		gameTitleTableColumn.setCellValueFactory(new PropertyValueFactory<Game, String>("gameTitle"));
-		gameTitleTableColumn.setSortable(true);
+
+		// gameUpdateTableColumn.setCellValueFactory(new
+		// PropertyValueFactory<Game, Button>());
+
+		// allows editing
+		gameTable.setEditable(true);
 		gameTitleTableColumn.setEditable(true);
+		gameTitleTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		gameTitleTableColumn.setOnEditCommit(new EventHandler<CellEditEvent<Game, String>>() {
+			@Override
+			public void handle(CellEditEvent<Game, String> g) {
+				((Game) g.getTableView().getItems().get(g.getTablePosition().getRow())).setGameTitle(g.getNewValue());
+			}
+		});
+
+		// gameTab.
+
+		// data src binding
 		gameTable.setItems(db.selectFromGame());
 
 		// adding event handlers for GAME PANE
