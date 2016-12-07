@@ -2,16 +2,34 @@ package exercise1;
 
 import javafx.collections.ObservableList;
 
-public abstract class OnlineGameTrackerController {
+/**
+ * @file OnlineGameTrackerController.java
+ * @author Kevin Ma | #: 300867968
+ * @date December 7, 2016
+ * @version 0.4.0 redesigned application to follow MVC design pattern - added
+ *          abstract View and Controller classes
+ * @description This abstract class defines the behaviors of controllers for
+ *              this application at a macro level.
+ */
 
-	// need connection to the database - used by all controllers
+public abstract class OnlineGameTrackerController {
+	// INSTANCE VARIABLES
+	// =============================================================================================
+	// connection to the database - used by all controllers
 	protected GameDatabaseContext db = new GameDatabaseContext();
 
-	// abstract methods
-	// all controllers in this application deal with their
-	// own tables.
-	// NOTE: Not all CRUD actions are in the abstract controller
-	// because different tables will require different method
-	// signatures
+	// CONSTRUCTOR
+	// =============================================================================================
+	protected OnlineGameTrackerController() {
+		db = new GameDatabaseContext();
+	}
+
+	// ABSTRACT METHODS
+	// =============================================================================================
+	/**
+	 * Selects and returns all rows from a table.
+	 * 
+	 * @return all rows of data in a given table, depends on the Model used
+	 */
 	abstract ObservableList<?> selectAll();
 }

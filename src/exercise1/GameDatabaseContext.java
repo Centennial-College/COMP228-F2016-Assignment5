@@ -6,11 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * @file 		GameDatabaseContext.java
- * @author 		Kevin Ma | #: 300867968
- * @date 		December 4, 2016
- * @version 	0.3.3 selecting a row in the gameTable populates the modify/remove
- *          	textfields
+ * @file GameDatabaseContext.java
+ * @author Kevin Ma | #: 300867968
+ * @date December 4, 2016
+ * @version 0.3.3 selecting a row in the gameTable populates the modify/remove
+ *          textfields
  * @description This class handles CRUD operations on the Game, Player, and
  *              PlayerAndGame tables in the database.
  * 
@@ -22,7 +22,7 @@ public class GameDatabaseContext {
 	public PreparedStatement pst;
 	public Connection conn;
 	public ResultSet rs;
-	
+
 	private ObservableList<GameModel> gameList;
 	private GameModel gameRecord;
 

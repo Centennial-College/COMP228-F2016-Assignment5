@@ -91,6 +91,8 @@ public class OnlineGameTracker extends Application {
 
 		// Initialize Tabbed Pane and Tabs
 		tabbedPane = new TabPane();
+		GameView gv = new GameView();
+		tabbedPane.getTabs().add(gv.getTab());
 		tabbedPane.getTabs().addAll(gameTab = new Tab("Game"), playerTab = new Tab("Player"),
 				playerAndGameTab = new Tab("Player and Game"));
 		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -151,8 +153,10 @@ public class OnlineGameTracker extends Application {
 		updateBtn = new Button("Update");
 
 		// Game Table
+		GameController gc = new GameController();
 		gameTable = new TableView<>();
-		gameTable.setItems(db.selectAllFromGame());
+		gameTable.setItems(gc.selectAll());
+//		gameTable.setItems(db.selectAllFromGame());
 		gameTable.getColumns().addAll(gameIdColum, gameTitleColumn);
 
 		// Adding textfields and buttons to modify or delete a game from the db
