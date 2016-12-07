@@ -9,7 +9,7 @@ package exercise1;
  * 
  */
 
-public class Player {
+public class PlayerModel {
 	// instance variables
 	private final int playerId;
 	private String firstName;
@@ -75,7 +75,7 @@ public class Player {
 	}
 
 	// constructor
-	public Player(int id) {
+	public PlayerModel(int id) {
 		this.playerId = id;
 	}
 }

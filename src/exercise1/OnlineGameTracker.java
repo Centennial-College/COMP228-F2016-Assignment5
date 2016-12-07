@@ -18,12 +18,14 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
- * @file OnlineGameTracker.java
- * @author Kevin Ma | #: 300867968
- * @date December 4, 2016
- * @version 0.3.3 selecting a row in the gameTable populates the modify/remove textfields
- * @description This class implements a UI using JavaFX and allows the user to
- *              perform CRUD operations on the Player and Game tables in the
+ * @file 		OnlineGameTracker.java
+ * @author 		Kevin Ma | #: 300867968
+ * @date 		December 4, 2016
+ * @version 	0.3.3 selecting a row in the gameTable populates the modify/remove
+ *          	textfields
+ * @description This is the controller for the OnlineGameTracker application.
+ *              This class implements a UI using JavaFX and allows the user to
+ *              perform CRUD operations on the Player and Game Models in the
  *              database.
  * 
  */
@@ -42,9 +44,9 @@ public class OnlineGameTracker extends Application {
 	VBox gameVBox; // contents of game tab in a vertical column
 
 	// Used for CRUD operations on the Game Table
-	TableView<Game> gameTable;
-	TableColumn<Game, Integer> gameIdColum;
-	TableColumn<Game, String> gameTitleColumn;
+	TableView<GameModel> gameTable;
+	TableColumn<GameModel, Integer> gameIdColum;
+	TableColumn<GameModel, String> gameTitleColumn;
 
 	TitledPane updateOrDeleteGameTitledPane;
 	// ---------------------------------------------------------------------------------------------
@@ -209,7 +211,7 @@ public class OnlineGameTracker extends Application {
 
 		// TableView Event Handlers
 		gameTable.getSelectionModel().selectedItemProperty().addListener(e -> {
-			Game tmpGame = gameTable.getSelectionModel().getSelectedItem();
+			GameModel tmpGame = gameTable.getSelectionModel().getSelectedItem();
 			gameIdModifyTF.setText(tmpGame.getGameId() + "");
 			gameTitleModifyTF.setText(tmpGame.getGameTitle());
 		});
@@ -224,10 +226,9 @@ public class OnlineGameTracker extends Application {
 			gameModifyMessageHBox.setManaged(true);
 		});
 		updateBtn.setOnAction(e -> {
-			Game tmpGame = db.selectAGame(2);
-			gameIdModifyTF.setText(db.selectAGame(2).getGameId() + "");
-			gameModifyLabel.setText("Successfully modified the game #" + tmpGame.getGameId() + " in the Game table.");
 			gameModifyMessageHBox.setManaged(true);
+			gameModifyLabel.setText(String.format("Successfully updated game# %d to '%s'", gameIdModifyTF.getText(),
+					gameTitleModifyTF.getText()));
 		});
 
 		resetGameTab();

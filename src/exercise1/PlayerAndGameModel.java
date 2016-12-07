@@ -10,7 +10,7 @@ package exercise1;
  * 
  */
 
-public class PlayerAndGame {
+public class PlayerAndGameModel {
 	// instance variables
 	private int playerGameId;
 	private int gameId;
@@ -41,7 +41,7 @@ public class PlayerAndGame {
 	}
 
 	// constructor
-	public PlayerAndGame(int playerGameId, int gameId, int playerId, String playingDate, String score) {
+	public PlayerAndGameModel(int playerGameId, int gameId, int playerId, String playingDate, String score) {
 		this.playerGameId = playerGameId;
 		this.gameId = gameId;
 		this.playerId = playerId;

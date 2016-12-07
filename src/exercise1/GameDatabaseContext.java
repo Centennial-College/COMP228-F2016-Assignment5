@@ -6,10 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * @file GameDatabaseContext.java
- * @author Kevin Ma | #: 300867968
- * @date December 4, 2016
- * @version 0.3.3 selecting a row in the gameTable populates the modify/remove textfields
+ * @file 		GameDatabaseContext.java
+ * @author 		Kevin Ma | #: 300867968
+ * @date 		December 4, 2016
+ * @version 	0.3.3 selecting a row in the gameTable populates the modify/remove
+ *          	textfields
  * @description This class handles CRUD operations on the Game, Player, and
  *              PlayerAndGame tables in the database.
  * 
@@ -18,11 +19,12 @@ import javafx.collections.ObservableList;
 public class GameDatabaseContext {
 
 	// Instance variables
-	private PreparedStatement pst;
-	private Connection conn;
-	private ResultSet rs;
-	private ObservableList<Game> gameList;
-	private Game gameRecord;
+	public PreparedStatement pst;
+	public Connection conn;
+	public ResultSet rs;
+	
+	private ObservableList<GameModel> gameList;
+	private GameModel gameRecord;
 
 	// since JDBC 4.0, DriverManager automatically loads and registers all
 	// drivers, thus do not need the following statment and
@@ -46,13 +48,13 @@ public class GameDatabaseContext {
 
 	// Public Methods
 	// CRUD for Game database
-	public ObservableList<Game> selectAllFromGame() {
+	public ObservableList<GameModel> selectAllFromGame() {
 		gameList.clear();
 		try {
 			pst = conn.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game];");
 			rs = pst.executeQuery();
 			while (rs.next()) {
-				gameRecord = new Game(rs.getInt(1));
+				gameRecord = new GameModel(rs.getInt(1));
 				gameRecord.setGameTitle(rs.getString(2));
 				gameList.add(gameRecord);
 			}
@@ -62,20 +64,38 @@ public class GameDatabaseContext {
 		return gameList;
 	}
 
-	public Game selectAGame(int id) {
-		Game g = null;
+	// public Game selectAGame(int id) {
+	// Game g = null;
+	// try {
+	// pst = conn.prepareStatement(
+	// "select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where
+	// [game_id] = ?");
+	// pst.setInt(1, id);
+	// rs = pst.executeQuery();
+	// rs.next();
+	// g = new Game(rs.getInt(1));
+	// g.setGameTitle(rs.getString(1));
+	// } catch (SQLException e) {
+	// System.out.println("ERROR - Faild to select game with id " + id);
+	// }
+	// return g;
+	// }
+
+	public boolean updateGame(int id, String title) {
 		try {
 			pst = conn.prepareStatement(
-					"select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where [game_id] = ?");
-			pst.setInt(1, id);
-			rs = pst.executeQuery();
-			rs.next();
-			g = new Game(rs.getInt(1));
-			g.setGameTitle(rs.getString(1));
+					"update [COMP228-F2016-OnlineGameTracker].[dbo].[Game] set game_title = ? where game_id = ?");
+			pst.setString(1, title);
+			pst.setInt(2, id);
+			pst.executeUpdate();
+			return true;
+			// return title;
+
 		} catch (SQLException e) {
-			System.out.println("ERROR - Faild to select game with id " + id);
+			e.printStackTrace();
+			System.out.printf("ERROR - Faild to update %s in the GAME table.%n", title);
 		}
-		return g;
+		return false;
 	}
 
 	public int insertIntoGame(String title) {

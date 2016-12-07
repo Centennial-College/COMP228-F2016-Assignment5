@@ -57,9 +57,9 @@ public class JavaFXDatabaseGUI extends Application {
 
 	TitledPane viewGameTitledPane;
 	GridPane viewGameGridPane;
-	TableView<Game> gameTable;
-	TableColumn<Game, Integer> gameIdTableColumn;
-	TableColumn<Game, String> gameTitleTableColumn;
+	TableView<GameModel> gameTable;
+	TableColumn<GameModel, Integer> gameIdTableColumn;
+	TableColumn<GameModel, String> gameTitleTableColumn;
 	TableColumn gameUpdateTableColumn;
 
 	// Variables for Player View of Application
@@ -194,10 +194,10 @@ public class JavaFXDatabaseGUI extends Application {
 				gameUpdateTableColumn = new TableColumn("Game Update"));
 
 		// gameid column
-		gameIdTableColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("gameId"));
+		gameIdTableColumn.setCellValueFactory(new PropertyValueFactory<GameModel, Integer>("gameId"));
 
 		// gametitle column
-		gameTitleTableColumn.setCellValueFactory(new PropertyValueFactory<Game, String>("gameTitle"));
+		gameTitleTableColumn.setCellValueFactory(new PropertyValueFactory<GameModel, String>("gameTitle"));
 
 		// gameUpdateTableColumn.setCellValueFactory(new
 		// PropertyValueFactory<Game, Button>());
@@ -206,10 +206,10 @@ public class JavaFXDatabaseGUI extends Application {
 		gameTable.setEditable(true);
 		gameTitleTableColumn.setEditable(true);
 		gameTitleTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		gameTitleTableColumn.setOnEditCommit(new EventHandler<CellEditEvent<Game, String>>() {
+		gameTitleTableColumn.setOnEditCommit(new EventHandler<CellEditEvent<GameModel, String>>() {
 			@Override
-			public void handle(CellEditEvent<Game, String> g) {
-				((Game) g.getTableView().getItems().get(g.getTablePosition().getRow())).setGameTitle(g.getNewValue());
+			public void handle(CellEditEvent<GameModel, String> g) {
+				((GameModel) g.getTableView().getItems().get(g.getTablePosition().getRow())).setGameTitle(g.getNewValue());
 			}
 		});
 
