@@ -11,7 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 8, 2016
- * @version 0.4.1 added controls to GameView, updated OnlineGameTrackerView
+ * @version 0.4.2 added viewing functionality to the GameView table
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -41,8 +41,8 @@ public class GameView extends OnlineGameTrackerView {
 
 	// add
 	// ---------------------------------------------------------------------------------------------
-	TextField gameTitleInputTF;
-	Button addBtn;
+	private TextField gameTitleInputTF;
+	private Button addBtn;
 
 	// CONSTRUCTOR
 	// =============================================================================================
@@ -58,46 +58,12 @@ public class GameView extends OnlineGameTrackerView {
 	 */
 	public void start() {
 		super.start();
-
-		// Initializing the controls
-		// Table Columns
-		// -----------------------------------------------------------------------------------------
-		this.gameIdColumn = new TableColumn<>("Game Id");
-		this.gameIdColumn.setMinWidth(100);
-		// NOTE: the property name comes from Model, not the column (diff name)
-		this.gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
-		// -----------------------------------------------------------------------------------------
-		this.gameTitleColumn = new TableColumn<>("Game Title");
-		this.gameTitleColumn.setMinWidth(300);
-		this.gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
-
-		// Textfields
-		this.gameTitleInputTF = new TextField();
-		this.gameTitleInputTF.setPromptText("Game Title");
-		this.gameTitleInputTF.setMinWidth(300);
-		// -----------------------------------------------------------------------------------------
-		this.gameTitleModifyTF = new TextField();
-		this.gameTitleModifyTF.setPromptText("Game Title");
-		this.gameTitleModifyTF.setMinWidth(300);
-
-		// Buttons
-		this.addBtn = new Button("Add");
-		this.updateBtn = new Button("Update");
-		this.deleteBtn = new Button("Delete");
-
-		// Adding the initialized controls to their container(s)
-		// table view
-		this.table = new TableView<GameModel>();
-		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
-		this.tabBodyVBox.getChildren().add(0, this.table);
-
-		// update/delete box
-		this.updateOrDeleteControlsHBox.getChildren().addAll(this.gameTitleInputTF, this.updateBtn, this.deleteBtn);
-
-		// add box
-		this.addControlsHBox.getChildren().addAll(this.gameTitleModifyTF, this.addBtn);
-
+		this.initializeControls();
+		this.addContentsToContainers();
 		this.resetTab();
+
+		// populate the table
+		this.table.setItems(gc.selectAll());
 	}
 
 	/**
@@ -130,5 +96,56 @@ public class GameView extends OnlineGameTrackerView {
 		// initially hide the messages until events triggered
 		this.updateOrDeleteMsgLblHBox.setManaged(false);
 		this.addMsgLblHBox.setManaged(false);
+	}
+
+	// PRIVATE METHODS
+	// =============================================================================================
+	/**
+	 * Adding the initialized controls to their container(s)
+	 */
+	private void addContentsToContainers() {
+		// table view
+		this.table = new TableView<GameModel>();
+		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
+		this.tabBodyVBox.getChildren().add(0, this.table);
+
+		// update/delete box
+		this.updateOrDeleteControlsHBox.getChildren().addAll(this.gameTitleInputTF, this.updateBtn, this.deleteBtn);
+
+		// add box
+		this.addControlsHBox.getChildren().addAll(this.gameTitleModifyTF, this.addBtn);
+	}
+
+	/**
+	 * Initializes the controls used on the GameView
+	 */
+	private void initializeControls() {
+		// Initialize the view's Controller
+		gc = new GameController();
+
+		// Table Columns
+		// -----------------------------------------------------------------------------------------
+		this.gameIdColumn = new TableColumn<>("Game Id");
+		this.gameIdColumn.setMinWidth(100);
+		// NOTE: the property name comes from Model, not the column (diff name)
+		this.gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
+		// -----------------------------------------------------------------------------------------
+		this.gameTitleColumn = new TableColumn<>("Game Title");
+		this.gameTitleColumn.setMinWidth(300);
+		this.gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
+
+		// Textfields
+		this.gameTitleInputTF = new TextField();
+		this.gameTitleInputTF.setPromptText("Game Title");
+		this.gameTitleInputTF.setMinWidth(300);
+		// -----------------------------------------------------------------------------------------
+		this.gameTitleModifyTF = new TextField();
+		this.gameTitleModifyTF.setPromptText("Game Title");
+		this.gameTitleModifyTF.setMinWidth(300);
+
+		// Buttons
+		this.addBtn = new Button("Add");
+		this.updateBtn = new Button("Update");
+		this.deleteBtn = new Button("Delete");
 	}
 }
