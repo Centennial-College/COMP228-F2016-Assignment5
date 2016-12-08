@@ -1,5 +1,6 @@
 package exercise1;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
@@ -10,9 +11,8 @@ import javafx.scene.layout.VBox;
 /**
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 7, 2016
- * @version 0.4.0 redesigned application to follow MVC design pattern - added
- *          abstract View and Controller classes
+ * @date December 8, 2016
+ * @version 0.4.1 added controls to GameView, updated OnlineGameTrackerView
  * @description This abstract class defines the structure and behaviors of views
  *              for this application at a macro level.
  */
@@ -22,8 +22,6 @@ public abstract class OnlineGameTrackerView {
 	// =============================================================================================
 	protected Tab tab;
 	protected VBox tabBodyVBox; // main container, level 1
-	// ---------------------------------------------------------------------------------------------
-	protected TableView<?> table;
 	// ---------------------------------------------------------------------------------------------
 	protected TitledPane updateOrDeleteTitledPane;
 	protected VBox updateOrDeleteBodyVBox; // container level 2
@@ -54,7 +52,21 @@ public abstract class OnlineGameTrackerView {
 	 * in descendants.
 	 */
 	public void start() {
-		// initialize the main containers
+		this.initializeContainers();
+		this.addContentsToContainers();
+
+		// configures the containers
+		this.configureHBoxes();
+		this.configureVBoxes();
+		this.configureTitledPanes();
+	}
+
+	// PRIVATE METHODS
+	// =============================================================================================
+	/**
+	 * Initializes the containers used for the OnlineGameTrakerView
+	 */
+	private void initializeContainers() {
 		this.tabBodyVBox = new VBox();
 		this.updateOrDeleteBodyVBox = new VBox();
 		this.updateOrDeleteControlsHBox = new HBox();
@@ -62,28 +74,53 @@ public abstract class OnlineGameTrackerView {
 		this.addBodyVBox = new VBox();
 		this.addControlsHBox = new HBox();
 		this.addMsgLblHBox = new HBox(this.addMsgLabel = new Label());
+	}
 
-		// initialize the tableview
-		this.table = new TableView<>();
-
-		// add the 3 main sections to the view - read, update/delete, and create
-		// nested containers for CRUD of table
+	/**
+	 * Add the 3 main sections to the view - read, update/delete, and create
+	 * nested containers for CRUD of table
+	 */
+	private void addContentsToContainers() {
 		// HBoxes in BodyVBoxes
 		this.updateOrDeleteBodyVBox.getChildren().addAll(this.updateOrDeleteControlsHBox,
 				this.updateOrDeleteMsgLblHBox);
 		this.addBodyVBox.getChildren().addAll(this.addControlsHBox, this.addMsgLblHBox);
 
-		// TitledPanes in MainVBox; BodyVBoxes already nested in TitledPanes
-		this.tabBodyVBox.getChildren().addAll(this.table, this.updateOrDeleteTitledPane, this.addTitledPane);
+		// HBoxes in TitledPanes
+		this.updateOrDeleteTitledPane.setContent(this.updateOrDeleteBodyVBox);
+		this.addTitledPane.setContent(this.addBodyVBox);
+
+		// TitledPanes in MainVBox
+		this.tabBodyVBox.getChildren().addAll(this.updateOrDeleteTitledPane, this.addTitledPane);
 
 		// set content of Tab to MainVBox
 		this.tab.setContent(this.tabBodyVBox);
-
-		this.configureTitledPanes();
 	}
 
-	// PRIVATE METHODS
-	// =============================================================================================
+	/**
+	 * Sets up the configuration for the 4 HBoxes
+	 */
+	private void configureHBoxes() {
+		this.updateOrDeleteControlsHBox.setPadding(new Insets(10));
+		this.updateOrDeleteControlsHBox.setSpacing(10);
+		// -----------------------------------------------------------------------------------------
+		this.updateOrDeleteMsgLblHBox.setPadding(new Insets(10));
+		this.updateOrDeleteMsgLblHBox.setSpacing(10);
+		// -----------------------------------------------------------------------------------------
+		this.addControlsHBox.setPadding(new Insets(10));
+		this.addControlsHBox.setSpacing(10);
+		// -----------------------------------------------------------------------------------------
+		this.addMsgLblHBox.setPadding(new Insets(10));
+		this.addMsgLblHBox.setSpacing(10);
+	}
+
+	/**
+	 * Sets up the configuration for the 2 VBoxes
+	 */
+	private void configureVBoxes() {
+
+	}
+
 	/**
 	 * Configures the titled panes behaviors - only one is shown at a time, the
 	 * other is collapsed

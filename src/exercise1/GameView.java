@@ -3,14 +3,15 @@ package exercise1;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 7, 2016
- * @version 0.4.1 added controls to GameView
+ * @date December 8, 2016
+ * @version 0.4.1 added controls to GameView, updated OnlineGameTrackerView
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -23,6 +24,10 @@ public class GameView extends OnlineGameTrackerView {
 	// This isn't like traditional MVC. This is just a workaround.
 	private GameController gc;
 
+	// TableView - can't be in abstract class due to typing problems. I tried =(
+	// ---------------------------------------------------------------------------------------------
+	private TableView<GameModel> table;
+
 	// read
 	// ---------------------------------------------------------------------------------------------
 	private TableColumn<GameModel, Integer> gameIdColumn;
@@ -30,14 +35,13 @@ public class GameView extends OnlineGameTrackerView {
 
 	// update/delete
 	// ---------------------------------------------------------------------------------------------
-	private TextField gameIdModifyTF;
 	private TextField gameTitleModifyTF;
 	private Button updateBtn;
 	private Button deleteBtn;
 
 	// add
 	// ---------------------------------------------------------------------------------------------
-	TextField gameTitleInput;
+	TextField gameTitleInputTF;
 	Button addBtn;
 
 	// CONSTRUCTOR
@@ -55,6 +59,7 @@ public class GameView extends OnlineGameTrackerView {
 	public void start() {
 		super.start();
 
+		// Initializing the controls
 		// Table Columns
 		// -----------------------------------------------------------------------------------------
 		this.gameIdColumn = new TableColumn<>("Game Id");
@@ -63,18 +68,13 @@ public class GameView extends OnlineGameTrackerView {
 		this.gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
 		// -----------------------------------------------------------------------------------------
 		this.gameTitleColumn = new TableColumn<>("Game Title");
-		this.gameTitleColumn.setMinWidth(100);
+		this.gameTitleColumn.setMinWidth(300);
 		this.gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
 
 		// Textfields
-		this.gameIdModifyTF = new TextField();
-		this.gameIdModifyTF.setPromptText("Game Id");
-		this.gameIdModifyTF.setEditable(false); // gameId is PK of table
-		this.gameIdModifyTF.setMinWidth(100);
-		// -----------------------------------------------------------------------------------------
-		this.gameTitleInput = new TextField();
-		this.gameTitleInput.setPromptText("Game Title");
-		this.gameTitleInput.setMinWidth(300);
+		this.gameTitleInputTF = new TextField();
+		this.gameTitleInputTF.setPromptText("Game Title");
+		this.gameTitleInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.gameTitleModifyTF = new TextField();
 		this.gameTitleModifyTF.setPromptText("Game Title");
@@ -85,6 +85,19 @@ public class GameView extends OnlineGameTrackerView {
 		this.updateBtn = new Button("Update");
 		this.deleteBtn = new Button("Delete");
 
+		// Adding the initialized controls to their container(s)
+		// table view
+		this.table = new TableView<GameModel>();
+		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
+		this.tabBodyVBox.getChildren().add(0, this.table);
+
+		// update/delete box
+		this.updateOrDeleteControlsHBox.getChildren().addAll(this.gameTitleInputTF, this.updateBtn, this.deleteBtn);
+
+		// add box
+		this.addControlsHBox.getChildren().addAll(this.gameTitleModifyTF, this.addBtn);
+
+		this.resetTab();
 	}
 
 	/**
@@ -100,7 +113,22 @@ public class GameView extends OnlineGameTrackerView {
 	 * Resets all controls to their predetermined default values on the Game Tab
 	 */
 	@Override
-	void resetTab() {
+	public void resetTab() {
 
+		// titledpanes default expanded/collapsed display
+		this.updateOrDeleteTitledPane.setExpanded(true);
+		this.addTitledPane.setExpanded(false);
+
+		// clear all textfields
+		this.gameTitleInputTF.clear();
+		this.gameTitleModifyTF.clear();
+
+		// clear all labels
+		this.updateOrDeleteMsgLabel.setText("");
+		this.addMsgLabel.setText("");
+
+		// initially hide the messages until events triggered
+		this.updateOrDeleteMsgLblHBox.setManaged(false);
+		this.addMsgLblHBox.setManaged(false);
 	}
 }
