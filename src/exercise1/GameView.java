@@ -11,8 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 /**
  * @file GameView.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
- * @version 0.5.0 implemented add a game functionality to GameView
+ * @date December 9, 2016
+ * @version 0.5.4 added prevention of adding multiple games with the same title
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -170,7 +170,8 @@ public class GameView extends OnlineGameTrackerView {
 				this.addMsgLabel
 						.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
 			} else {
-				this.addMsgLabel.setText("Faild to add '" + this.gameTitleInputTF.getText() + "' to the Game table.");
+				this.addMsgLabel.setText("Faild to add '" + this.gameTitleInputTF.getText()
+						+ "' to the Game table. It already exists within the Game table.");
 			}
 
 			this.addMsgLblHBox.setManaged(true);
