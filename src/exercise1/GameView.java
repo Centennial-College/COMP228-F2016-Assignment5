@@ -1,5 +1,6 @@
 package exercise1;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
@@ -11,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 8, 2016
- * @version 0.4.3 implemented event handlers for selecting table rows and editing textfields
+ * @version 0.4.4 added update functionality for GameView; deleted unused code
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -27,6 +28,7 @@ public class GameView extends OnlineGameTrackerView {
 	// TableView - can't be in abstract class due to typing problems. I tried =(
 	// ---------------------------------------------------------------------------------------------
 	private TableView<GameModel> table;
+	private ObservableList<GameModel> gameList;
 
 	// read
 	// ---------------------------------------------------------------------------------------------
@@ -64,7 +66,8 @@ public class GameView extends OnlineGameTrackerView {
 		this.addEventListeners();
 
 		// populate the table
-		this.table.setItems(gc.selectAll());
+		gameList = gc.selectAll();
+		this.table.setItems(gameList);
 
 		this.resetTab();
 	}
@@ -117,19 +120,24 @@ public class GameView extends OnlineGameTrackerView {
 	private void addEventListeners() {
 		// TableView Event Handlers - when selecting a different record
 		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
-			// enable buttons to interact with selected record
-			this.updateBtn.setDisable(false);
-			this.deleteBtn.setDisable(false);
-			this.gameTitleModifyTF.setDisable(false);
 
-			// clear and hide previous message when selecting new record
-			this.updateOrDeleteMsgLabel.setText("");
-			this.updateOrDeleteMsgLblHBox.setManaged(false);
+			// to prevent errors, when removing all items from table
+			if (this.table.getItems().size() > 0) {
 
-			// populate textfields with data from selected table row
-			GameModel tmpGame = this.table.getSelectionModel().getSelectedItem();
-			this.gameIdModifyTF.setText(tmpGame.getGameId() + "");
-			this.gameTitleModifyTF.setText(tmpGame.getGameTitle());
+				// enable buttons to interact with selected record
+				this.updateBtn.setDisable(false);
+				this.deleteBtn.setDisable(false);
+				this.gameTitleModifyTF.setDisable(false);
+
+				// clear and hide previous message when selecting new record
+				this.updateOrDeleteMsgLabel.setText("");
+				this.updateOrDeleteMsgLblHBox.setManaged(false);
+
+				// populate textfields with data from selected table row
+				GameModel tmpGame = this.table.getSelectionModel().getSelectedItem();
+				this.gameIdModifyTF.setText(tmpGame.getGameId() + "");
+				this.gameTitleModifyTF.setText(tmpGame.getGameTitle());
+			}
 		});
 		// -----------------------------------------------------------------------------------------
 
@@ -159,7 +167,7 @@ public class GameView extends OnlineGameTrackerView {
 			this.addMsgLabel.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
 			this.addMsgLblHBox.setManaged(true);
 			// prevents redoing same action
-			this.gameTitleInputTF.setText("");
+			this.gameTitleInputTF.clear();
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
@@ -167,24 +175,41 @@ public class GameView extends OnlineGameTrackerView {
 					+ this.gameTitleModifyTF.getText() + "' from the Game table.");
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
 			// prevents redoing same action
-			this.gameTitleModifyTF.setText("");
-			this.gameIdModifyTF.setText("");
+			this.gameTitleModifyTF.clear();
+			this.gameIdModifyTF.clear();
 			this.gameTitleModifyTF.setDisable(true);
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
 		});
 		this.updateBtn.setOnAction(e -> {
+			if (gc.updateGame(Integer.parseInt(this.gameIdModifyTF.getText()), this.gameTitleModifyTF.getText(),
+					gameList)) {
+				this.updateOrDeleteMsgLabel
+						.setText(String.format("Successfully updated game #%s to '%s' in the Game table.",
+								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
+			} else {
+				this.updateOrDeleteMsgLabel.setText(String.format("Failed to update game #%s: '%s' in the Game table.",
+						this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
+			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
-			this.updateOrDeleteMsgLabel
-					.setText(String.format("Successfully updated game #%s to '%s' in the Game table.",
-							this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
+
+			this.updateTable();
+
 			// prevents redoing same action
-			this.gameIdModifyTF.setText("");
-			this.gameTitleModifyTF.setText("");
+			this.gameIdModifyTF.clear();
+			this.gameTitleModifyTF.clear();
 			this.gameTitleModifyTF.setDisable(true);
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
 		});
+	}
+
+	/**
+	 * Updates the table after a change has been made.
+	 */
+	private void updateTable() {
+		this.table.getItems().clear();
+		this.table.getItems().addAll(gc.selectAll());
 	}
 
 	/**
