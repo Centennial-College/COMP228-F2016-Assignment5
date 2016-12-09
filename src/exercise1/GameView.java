@@ -207,8 +207,9 @@ public class GameView extends OnlineGameTrackerView {
 						.setText(String.format("Successfully updated game #%s to '%s' in the Game table.",
 								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
 			} else {
-				this.updateOrDeleteMsgLabel.setText(String.format("Failed to update game #%s: '%s' in the Game table.",
-						this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
+				this.updateOrDeleteMsgLabel.setText(
+						String.format("Failed to update game #%s: '%s' in the Game table. Game titles must be unique!",
+								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
 			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
 
@@ -238,6 +239,8 @@ public class GameView extends OnlineGameTrackerView {
 		// table view
 		this.table = new TableView<GameModel>();
 		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
+		this.gameIdColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.25));
+		this.gameTitleColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));
 		this.tabBodyVBox.getChildren().add(0, this.table);
 
 		// update/delete box
@@ -258,12 +261,10 @@ public class GameView extends OnlineGameTrackerView {
 		// Table Columns
 		// -----------------------------------------------------------------------------------------
 		this.gameIdColumn = new TableColumn<>("Game Id");
-		this.gameIdColumn.setMinWidth(100);
 		// NOTE: the property name comes from Model, not the column (diff name)
 		this.gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
 		// -----------------------------------------------------------------------------------------
 		this.gameTitleColumn = new TableColumn<>("Game Title");
-		this.gameTitleColumn.setMinWidth(300);
 		this.gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
 
 		// Textfields

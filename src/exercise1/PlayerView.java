@@ -11,7 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 /**
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
+ * @date December 9, 2016
  * @version 0.5.3 added controls to PlayerView
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
@@ -334,6 +334,14 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.table = new TableView<PlayerModel>();
 		this.table.getColumns().addAll(this.playerIdColumn, this.playerFnameColumn, this.playerLnameColumn,
 				this.playerAddrColumn, this.playerPcodeColumn, this.playerProvColumn, this.playerPhoneColumn);
+		this.playerIdColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerFnameColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerLnameColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerAddrColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerPcodeColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerProvColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+		this.playerPhoneColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
+
 		this.tabBodyVBox.getChildren().add(0, this.table);
 
 		// update/delete box
@@ -357,88 +365,68 @@ public class PlayerView extends OnlineGameTrackerView {
 		// Table Columns
 		// -----------------------------------------------------------------------------------------
 		this.playerIdColumn = new TableColumn<>("Player Id");
-		// this.playerIdColumn.setMinWidth(100);
 		// NOTE: the property name comes from Model, not the column (diff name)
 		this.playerIdColumn.setCellValueFactory(new PropertyValueFactory<>("playerId"));
 		// -----------------------------------------------------------------------------------------
 		this.playerFnameColumn = new TableColumn<>("First Name");
-		// this.playerFnameColumn.setMinWidth(300);
 		this.playerFnameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 		// -----------------------------------------------------------------------------------------
 		this.playerLnameColumn = new TableColumn<>("Last Name");
-		// this.playerLnameColumn.setMinWidth(300);
 		this.playerLnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 		// -----------------------------------------------------------------------------------------
 		this.playerAddrColumn = new TableColumn<>("Address");
-		// this.playerAddrColumn.setMinWidth(300);
 		this.playerAddrColumn.setCellValueFactory(new PropertyValueFactory<>("addres"));
 		// -----------------------------------------------------------------------------------------
 		this.playerPcodeColumn = new TableColumn<>("Postal Code");
-		// this.playerPcodeColumn.setMinWidth(300);
 		this.playerPcodeColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
 		// -----------------------------------------------------------------------------------------
 		this.playerProvColumn = new TableColumn<>("Province");
-		// this.playerProvColumn.setMinWidth(300);
 		this.playerProvColumn.setCellValueFactory(new PropertyValueFactory<>("province"));
 		// -----------------------------------------------------------------------------------------
 		this.playerPhoneColumn = new TableColumn<>("Phone Number");
-		this.playerPhoneColumn.setMinWidth(100);
 		this.playerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
 		// Textfields
 		this.playerIdModifyTF = new TextField();
 		this.playerIdModifyTF.setPromptText("Player Id");
-		// this.playerIdModifyTF.setMinWidth(100);
 		this.playerIdModifyTF.setDisable(true); // cannot edit to maintain
 												// referential integrity
 		// -----------------------------------------------------------------------------------------
 		this.playerFnameInputTF = new TextField();
 		this.playerFnameInputTF.setPromptText("First Name");
-		// this.playerFnameInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerFnameModifyTF = new TextField();
 		this.playerFnameModifyTF.setPromptText("First Name");
-		// this.playerFnameModifyTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerLnameInputTF = new TextField();
 		this.playerLnameInputTF.setPromptText("Last Name");
-		// this.playerLnameInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerLnameModifyTF = new TextField();
 		this.playerLnameModifyTF.setPromptText("Last Name");
-		// this.playerLnameModifyTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerAddrInputTF = new TextField();
 		this.playerAddrInputTF.setPromptText("Address");
-		// this.playerAddrInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerAddrModifyTF = new TextField();
 		this.playerAddrModifyTF.setPromptText("Address");
-		// this.playerAddrModifyTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerPcodeInputTF = new TextField();
 		this.playerPcodeInputTF.setPromptText("Postal Code");
-		// this.playerPcodeInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerPcodeModifyTF = new TextField();
 		this.playerPcodeModifyTF.setPromptText("Postal Code");
-		// this.playerPcodeModifyTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerProvInputTF = new TextField();
 		this.playerProvInputTF.setPromptText("Province");
-		// this.playerProvInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerProvModifyTF = new TextField();
 		this.playerProvModifyTF.setPromptText("Province");
-		// this.playerProvModifyTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerPhoneInputTF = new TextField();
 		this.playerPhoneInputTF.setPromptText("Phone Number");
-		// this.playerPhoneInputTF.setMinWidth(300);
 		// -----------------------------------------------------------------------------------------
 		this.playerPhoneModifyTF = new TextField();
 		this.playerPhoneModifyTF.setPromptText("Phone Number");
-		// this.playerPhoneModifyTF.setMinWidth(300);
 
 		// Buttons
 		this.addBtn = new Button("Add");
