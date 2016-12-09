@@ -49,7 +49,7 @@ public class OnlineGameTracker extends Application {
 
 		// Initialize Tabbed Pane and Tabs
 		tabbedPane = new TabPane();
-		tabbedPane.getTabs().addAll(gameTab = new GameView().getTab(), playerTab = new Tab("Player"),
+		tabbedPane.getTabs().addAll(gameTab = new GameView().getTab(), playerTab = new PlayerView().getTab(),
 				playerAndGameTab = new Tab("Player and Game"));
 		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 

@@ -28,7 +28,6 @@ public class GameView extends OnlineGameTrackerView {
 	// TableView - can't be in abstract class due to typing problems. I tried =(
 	// ---------------------------------------------------------------------------------------------
 	private TableView<GameModel> table;
-	private ObservableList<GameModel> gameList;
 
 	// read
 	// ---------------------------------------------------------------------------------------------
@@ -66,8 +65,7 @@ public class GameView extends OnlineGameTrackerView {
 		this.addEventListeners();
 
 		// populate the table
-		gameList = gc.selectAll();
-		this.table.setItems(gameList);
+		this.table.setItems(gc.selectAll());
 
 		this.resetTab();
 	}
