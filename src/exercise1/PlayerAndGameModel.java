@@ -3,22 +3,24 @@ package exercise1;
 /**
  * @file PlayerAndGame.java
  * @author Kevin Ma | #: 300867968
- * @date December 3, 2016
- * @version 0.2.0 added models corresponding to the tables in the database
+ * @date December 8, 2016
+ * @version 0.5.1 updated Models comments
  * @description This class is a model for the PlayerAndGame table in the
  *              database.
  * 
  */
 
 public class PlayerAndGameModel {
-	// instance variables
+	// INSTANCE VARIABLES
+	// =============================================================================================
 	private int playerGameId;
 	private int gameId;
 	private int playerId;
 	private String playingDate;
 	private String score;
 
-	// Public Properties
+	// PUBLIC PROPERTIES
+	// =============================================================================================
 	// NOTE: only getters to prevent breaking of referential integrity
 	public int getPlayerGameId() {
 		return playerGameId;
@@ -40,7 +42,8 @@ public class PlayerAndGameModel {
 		return score;
 	}
 
-	// constructor
+	// CONSTRUCTOR
+	// =============================================================================================
 	public PlayerAndGameModel(int playerGameId, int gameId, int playerId, String playingDate, String score) {
 		this.playerGameId = playerGameId;
 		this.gameId = gameId;
