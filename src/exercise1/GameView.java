@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 8, 2016
- * @version 0.4.4 added update functionality for GameView; deleted unused code
+ * @version 0.4.5 added delete functionality for GameView
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -171,9 +171,17 @@ public class GameView extends OnlineGameTrackerView {
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
-			this.updateOrDeleteMsgLabel.setText("Successfully deleted game #" + this.gameIdModifyTF.getText() + " '"
-					+ this.gameTitleModifyTF.getText() + "' from the Game table.");
+			if (gc.deleteGame(Integer.parseInt(this.gameIdModifyTF.getText()))) {
+				this.updateOrDeleteMsgLabel.setText("Successfully deleted game #" + this.gameIdModifyTF.getText() + " '"
+						+ this.gameTitleModifyTF.getText() + "' from the Game table.");
+			} else {
+				this.updateOrDeleteMsgLabel.setText("Failed to delete game #" + this.gameIdModifyTF.getText() + " '"
+						+ this.gameTitleModifyTF.getText() + "' from the Game table.");
+			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+			this.updateTable();
+
 			// prevents redoing same action
 			this.gameTitleModifyTF.clear();
 			this.gameIdModifyTF.clear();
@@ -182,8 +190,7 @@ public class GameView extends OnlineGameTrackerView {
 			this.deleteBtn.setDisable(true);
 		});
 		this.updateBtn.setOnAction(e -> {
-			if (gc.updateGame(Integer.parseInt(this.gameIdModifyTF.getText()), this.gameTitleModifyTF.getText(),
-					gameList)) {
+			if (gc.updateGame(Integer.parseInt(this.gameIdModifyTF.getText()), this.gameTitleModifyTF.getText())) {
 				this.updateOrDeleteMsgLabel
 						.setText(String.format("Successfully updated game #%s to '%s' in the Game table.",
 								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));

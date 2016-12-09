@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
  * @file GameController.java
  * @author Kevin Ma | #: 300867968
  * @date December 8, 2016
- * @version 0.4.4 added update functionality for GameView; deleted unused code
+ * @version 0.4.5 added delete functionality for GameView
  * @description This class defines the behaviors of the Game view for this
  *              application at a micro level.
  */
@@ -23,7 +23,6 @@ public class GameController extends OnlineGameTrackerController {
 	 */
 	@Override
 	public ObservableList<GameModel> selectAll() {
-
 		// temp variables
 		ObservableList<GameModel> gameList;
 		GameModel gameRecord;
@@ -60,17 +59,43 @@ public class GameController extends OnlineGameTrackerController {
 		return 0;
 	}
 
-	public boolean updateGame(int id, String title, ObservableList<GameModel> gameList) {
+	/**
+	 * Updates the row in the Game table that has a matching game_id and
+	 * game_title as the parameters.
+	 * 
+	 * @param id
+	 *            the game_id of the row to be updated
+	 * @param title
+	 *            the game_title of the row to be updated
+	 * @return true if the update was successful, false otherwise
+	 */
+	public boolean updateGame(int id, String title) {
 		try {
 			db.pst = db.conn.prepareStatement(
 					"update [COMP228-F2016-OnlineGameTracker].[dbo].[Game] set game_title = ? where game_id = ?");
 			db.pst.setString(1, title);
 			db.pst.setInt(2, id);
 			db.pst.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
+	}
 
-			// if reached here, means the game was updated in db. so now need to
-			// update in table's list
-
+	/**
+	 * Deletes the row in the Game table that has a matching game_id as the
+	 * parameter. Don't need game_title because game_id is the primary key.
+	 * 
+	 * @param id
+	 *            the game_id of the row to be updated
+	 * @return true if the deletion was successful, false otherwise
+	 */
+	public boolean deleteGame(int id) {
+		try {
+			db.pst = db.conn
+					.prepareStatement("delete from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where game_id = ?");
+			db.pst.setInt(1, id);
+			db.pst.executeUpdate();
 			return true;
 		} catch (SQLException e) {
 			return false;
