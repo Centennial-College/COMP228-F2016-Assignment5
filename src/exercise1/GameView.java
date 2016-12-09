@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 8, 2016
- * @version 0.4.5 added delete functionality for GameView
+ * @version 0.5.0 implemented add a game functionality to GameView
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -124,6 +124,10 @@ public class GameView extends OnlineGameTrackerView {
 			// to prevent errors, when removing all items from table
 			if (this.table.getItems().size() > 0) {
 
+				// switch focus to the update/delete titled pane
+				this.updateOrDeleteTitledPane.setExpanded(true);
+				this.addTitledPane.setExpanded(false);
+
 				// enable buttons to interact with selected record
 				this.updateBtn.setDisable(false);
 				this.deleteBtn.setDisable(false);
@@ -164,8 +168,17 @@ public class GameView extends OnlineGameTrackerView {
 
 		// Button Event Handlers
 		this.addBtn.setOnAction(e -> {
-			this.addMsgLabel.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
+			if (gc.insertIntoGame(this.gameTitleInputTF.getText())) {
+				this.addMsgLabel
+						.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
+			} else {
+				this.addMsgLabel.setText("Faild to add '" + this.gameTitleInputTF.getText() + "' to the Game table.");
+			}
+
 			this.addMsgLblHBox.setManaged(true);
+
+			this.updateTable();
+
 			// prevents redoing same action
 			this.gameTitleInputTF.clear();
 			this.addBtn.setDisable(true);
