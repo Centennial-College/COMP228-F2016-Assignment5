@@ -71,7 +71,7 @@ public class PlayerController extends OnlineGameTrackerController {
 			String phone) {
 		try {
 			db.pst = db.conn.prepareStatement(
-					"select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where first_name = ? and last_name = ? and address = ? and postal_code = ? and provice = ? and phone_number = ?");
+					"select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where first_name = ? and last_name = ? and address = ? and postal_code = ? and province = ? and phone_number = ?");
 			db.pst.setString(1, fName);
 			db.pst.setString(2, lName);
 			db.pst.setString(3, address);
