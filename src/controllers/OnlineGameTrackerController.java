@@ -1,6 +1,7 @@
-package exercise1;
+package controllers;
 
 import javafx.collections.ObservableList;
+import models.GameDatabaseContext;
 
 /**
  * @file OnlineGameTrackerController.java

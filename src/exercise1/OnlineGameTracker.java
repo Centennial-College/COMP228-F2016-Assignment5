@@ -2,6 +2,8 @@ package exercise1;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import views.GameView;
+import views.PlayerView;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -55,6 +57,7 @@ public class OnlineGameTracker extends Application {
 
 		// Stage and scene configuration
 		Scene scene = new Scene(tabbedPane);
+		scene.getStylesheets().add("exercise1/DarkTheme.css");
 		window.setScene(scene);
 		window.setResizable(false);
 		window.show();

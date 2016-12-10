@@ -1,12 +1,17 @@
-package exercise1;
+package views;
 
+import controllers.PlayerController;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import models.PlayerModel;
 
 /**
  * @file PlayerView.java
@@ -365,14 +370,26 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.tabBodyVBox.getChildren().add(0, this.table);
 
 		// update/delete box
-		this.updateOrDeleteControlsHBox.getChildren().addAll(this.playerIdModifyTF, this.playerFnameModifyTF,
-				this.playerLnameModifyTF, this.playerAddrModifyTF, this.playerPcodeModifyTF, this.playerProvModifyTF,
-				this.playerPhoneModifyTF, this.updateBtn, this.deleteBtn);
+		GridPane updateDeleteGridPane = new GridPane();
+		updateDeleteGridPane.setAlignment(Pos.CENTER);
+		updateDeleteGridPane.setHgap(10);
+//		updateDeleteGridPane.setVgap(10);
+//		updateDeleteGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+		
+		updateDeleteGridPane.add(this.playerIdModifyTF, 0, 0);
+		updateDeleteGridPane.add(this.playerFnameModifyTF, 1, 0);
+		updateDeleteGridPane.add(this.playerLnameModifyTF, 2, 0);
+		updateDeleteGridPane.add(this.playerAddrModifyTF, 3, 0);
+		
+		this.updateOrDeleteControlsHBox.getChildren().addAll(updateDeleteGridPane);
+//		this.updateOrDeleteControlsHBox.getChildren().addAll(this.playerIdModifyTF, this.playerFnameModifyTF,
+//				this.playerLnameModifyTF, this.playerAddrModifyTF, this.playerPcodeModifyTF, this.playerProvModifyTF,
+//				this.playerPhoneModifyTF, this.updateBtn, this.deleteBtn);
 
 		// add box
-		this.addControlsHBox.getChildren().addAll(this.playerFnameInputTF, this.playerLnameInputTF,
-				this.playerAddrInputTF, this.playerPcodeInputTF, this.playerProvInputTF, this.playerPhoneInputTF,
-				this.addBtn);
+//		this.addControlsHBox.getChildren().addAll(this.playerFnameInputTF, this.playerLnameInputTF,
+//				this.playerAddrInputTF, this.playerPcodeInputTF, this.playerProvInputTF, this.playerPhoneInputTF,
+//				this.addBtn);
 	}
 
 	/**
@@ -403,7 +420,7 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.playerProvColumn = new TableColumn<>("Province");
 		this.playerProvColumn.setCellValueFactory(new PropertyValueFactory<>("province"));
 		// -----------------------------------------------------------------------------------------
-		this.playerPhoneColumn = new TableColumn<>("Phone Number");
+		this.playerPhoneColumn = new TableColumn<>("Phone #");
 		this.playerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
 		// Textfields

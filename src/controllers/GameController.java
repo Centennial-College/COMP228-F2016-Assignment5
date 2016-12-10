@@ -1,9 +1,10 @@
-package exercise1;
+package controllers;
 
 import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.GameModel;
 
 /**
  * @file GameController.java

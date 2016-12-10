@@ -1,5 +1,6 @@
-package exercise1;
+package views;
 
+import controllers.GameController;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -7,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import models.GameModel;
 
 /**
  * @file GameView.java
@@ -129,7 +131,7 @@ public class GameView extends OnlineGameTrackerView {
 				// enable buttons to interact with selected record
 				this.updateBtn.setDisable(false);
 				this.deleteBtn.setDisable(false);
-				
+
 				// enable TextFields so that the selected row can be edited
 				this.gameTitleModifyTF.setDisable(false);
 

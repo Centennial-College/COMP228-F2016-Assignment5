@@ -1,4 +1,4 @@
-package exercise1;
+package models;
 
 /**
  * @file PlayerAndGame.java
