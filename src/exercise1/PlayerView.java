@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 9, 2016
- * @version 0.5.5 implemented 'Add a Player' functionality
+ * @version 0.5.6 implemented event handler for table row selected
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -190,7 +190,14 @@ public class PlayerView extends OnlineGameTrackerView {
 				// enable buttons to interact with selected record
 				this.updateBtn.setDisable(false);
 				this.deleteBtn.setDisable(false);
-				this.playerIdModifyTF.setDisable(false);
+
+				// enable TextFields so that the selected row can be edited
+				this.playerFnameModifyTF.setDisable(false);
+				this.playerLnameModifyTF.setDisable(false);
+				this.playerAddrModifyTF.setDisable(false);
+				this.playerPcodeModifyTF.setDisable(false);
+				this.playerProvModifyTF.setDisable(false);
+				this.playerPhoneModifyTF.setDisable(false);
 
 				// clear and hide previous message when selecting new record
 				this.updateOrDeleteMsgLabel.setText("");
@@ -200,6 +207,11 @@ public class PlayerView extends OnlineGameTrackerView {
 				PlayerModel tmpPlayer = this.table.getSelectionModel().getSelectedItem();
 				this.playerIdModifyTF.setText(tmpPlayer.getPlayerId() + "");
 				this.playerFnameModifyTF.setText(tmpPlayer.getFirstName());
+				this.playerLnameModifyTF.setText(tmpPlayer.getLastName());
+				this.playerAddrModifyTF.setText(tmpPlayer.getAddress());
+				this.playerPcodeModifyTF.setText(tmpPlayer.getPostalCode());
+				this.playerProvModifyTF.setText(tmpPlayer.getProvince());
+				this.playerPhoneModifyTF.setText(tmpPlayer.getPhoneNumber());
 			}
 		});
 		// -----------------------------------------------------------------------------------------
@@ -255,7 +267,7 @@ public class PlayerView extends OnlineGameTrackerView {
 						+ this.playerLnameInputTF.getText() + "' to the Player table.");
 			} else {
 				this.addMsgLabel.setText("Failed to add '" + this.playerFnameInputTF.getText() + " "
-						+ this.playerLnameInputTF.getText() + "' to the Player table.");
+						+ this.playerLnameInputTF.getText() + "' to the Player table. Players must be unique!");
 			}
 
 			this.addMsgLblHBox.setManaged(true);
@@ -307,7 +319,8 @@ public class PlayerView extends OnlineGameTrackerView {
 			// this.playerIdModifyTF.getText()));
 			// } else {
 			// this.updateOrDeleteMsgLabel.setText(String.format("Failed to
-			// update game #%s: '%s' in the Game table.",
+			// update game #%s: '%s' in the Game table. Players must be
+			// unique!",
 			// this.playerFnameModifyTF.getText(),
 			// this.playerIdModifyTF.getText()));
 			// }

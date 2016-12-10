@@ -129,6 +129,8 @@ public class GameView extends OnlineGameTrackerView {
 				// enable buttons to interact with selected record
 				this.updateBtn.setDisable(false);
 				this.deleteBtn.setDisable(false);
+				
+				// enable TextFields so that the selected row can be edited
 				this.gameTitleModifyTF.setDisable(false);
 
 				// clear and hide previous message when selecting new record
