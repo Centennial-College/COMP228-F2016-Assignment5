@@ -18,7 +18,8 @@ import models.Player;
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 10, 2016
- * @version 0.6.0 implemented Delete Player functionality, finished PlayerView
+ * @version 0.6.1 implemented Tabs automatically resetting when switching to
+ *          different tab
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -107,6 +108,9 @@ public class PlayerView extends OnlineGameTrackerView {
 	@Override
 	public void resetTab() {
 
+		// deselect all rows
+		this.table.getSelectionModel().clearSelection();
+
 		// titledpanes default expanded/collapsed display
 		this.addTitledPane.setExpanded(true);
 		this.updateOrDeleteTitledPane.setExpanded(false);
@@ -187,7 +191,7 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
 
 			// to prevent errors, when removing all items from table
-			if (this.table.getItems().size() > 0) {
+			if (this.table.getItems().size() > 0 && this.table.getSelectionModel().getSelectedItem() != null) {
 
 				// switch focus to the update/delete titled pane
 				this.updateOrDeleteTitledPane.setExpanded(true);

@@ -13,8 +13,9 @@ import models.Game;
 /**
  * @file GameView.java
  * @author Kevin Ma | #: 300867968
- * @date December 9, 2016
- * @version 0.5.4 added prevention of adding multiple games with the same title
+ * @date December 10, 2016
+ * @version 0.6.1 implemented Tabs automatically resetting when switching to
+ *          different tab
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -87,6 +88,9 @@ public class GameView extends OnlineGameTrackerView {
 	@Override
 	public void resetTab() {
 
+		// deselect all rows
+		this.table.getSelectionModel().clearSelection();
+
 		// titledpanes default expanded/collapsed display
 		this.addTitledPane.setExpanded(true);
 		this.updateOrDeleteTitledPane.setExpanded(false);
@@ -122,7 +126,7 @@ public class GameView extends OnlineGameTrackerView {
 		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
 
 			// to prevent errors, when removing all items from table
-			if (this.table.getItems().size() > 0) {
+			if (this.table.getItems().size() > 0 && this.table.getSelectionModel().getSelectedItem() != null) {
 
 				// switch focus to the update/delete titled pane
 				this.updateOrDeleteTitledPane.setExpanded(true);

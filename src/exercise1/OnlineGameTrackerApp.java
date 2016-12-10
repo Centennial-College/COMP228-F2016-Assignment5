@@ -13,8 +13,9 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 /**
  * @file OnlineGameTracker.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
- * @version 0.4.4 added update functionality for GameView; deleted unused code
+ * @date December 10, 2016
+ * @version 0.6.1 implemented Tabs automatically resetting when switching to
+ *          different tab
  * @description This is the controller for the OnlineGameTracker application.
  *              This class implements a UI using JavaFX and allows the user to
  *              perform CRUD operations on the Player and Game Models in the
@@ -31,10 +32,12 @@ public class OnlineGameTrackerApp extends Application {
 
 	// Tab that allows manipulation of the Game table
 	// =============================================================================================
+	GameView gv;
 	Tab gameTab;
 
 	// Tab that allows manipulation of the Player table
 	// =============================================================================================
+	PlayerView pv;
 	Tab playerTab;
 
 	// Tab that allows manipulation of the PlayerAndGame table
@@ -52,13 +55,22 @@ public class OnlineGameTrackerApp extends Application {
 
 		// Initialize Tabbed Pane and Tabs
 		tabbedPane = new TabPane();
-		tabbedPane.getTabs().addAll(gameTab = new GameView().getTab(), playerTab = new PlayerView().getTab(),
-				playerAndGameTab = new Tab("Player and Game"));
+		tabbedPane.getTabs().addAll(gameTab = (gv = new GameView()).getTab(),
+				playerTab = (pv = new PlayerView()).getTab(), playerAndGameTab = new Tab("Player and Game"));
 		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		tabbedPane.setStyle("-fx-background-color: #1d1d1d");
 
-	// Stage and scene configuration
-	Scene scene = new Scene(
-			tabbedPane);scene.getStylesheets().add("exercise1/DarkTheme.css");window.setScene(scene);window.setResizable(false);window.show();
-}
+		// The tabs reset to their default values w hen they are not in focus
+		tabbedPane.getSelectionModel().selectedItemProperty().addListener(e -> {
+			gv.resetTab();
+			pv.resetTab();
+		});
+
+		// Stage and scene configuration
+		Scene scene = new Scene(tabbedPane);
+		scene.getStylesheets().add("exercise1/DarkTheme.css");
+		window.setScene(scene);
+		window.setResizable(false);
+		window.show();
+	}
 }
