@@ -375,7 +375,6 @@ public class PlayerView extends OnlineGameTrackerView {
 		updateDeleteGridPane.setAlignment(Pos.CENTER);
 		updateDeleteGridPane.setHgap(10);
 		updateDeleteGridPane.setVgap(10);
-		// updateDeleteGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
 
 		updateDeleteGridPane.add(this.playerIdModifyTF, 0, 0);
 		updateDeleteGridPane.add(this.playerFnameModifyTF, 1, 0);

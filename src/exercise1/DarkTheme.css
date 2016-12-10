@@ -56,8 +56,12 @@
     -fx-opacity: 1.0;
 }
 
+.root{
+	-fx-selection-bar: lightgrey;
+}
+
 .table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: -fx-focus-color;
+    -fx-background-color: lightgrey;
 }
 
 .split-pane:horizontal > .split-pane-divider {
@@ -101,7 +105,7 @@
 }
 
 .tab-pane .tab{
-    -fx-background-color: #e6e6e6;
+    -fx-background-color: derive(#1d1d1d,20.0%);
 }
 
 .tab-pane .tab:selected
