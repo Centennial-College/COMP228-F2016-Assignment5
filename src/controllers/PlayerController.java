@@ -10,7 +10,7 @@ import models.Player;
  * @file PlayerController.java
  * @author Kevin Ma | #: 300867968
  * @date December 9, 2016
- * @version 0.5.5 implemented 'Add a Player' functionality
+ * @version v0.5.7 placed PlayerView controls into gridpanes for better structure
  * @description This class defines the behaviors of the Player view for this
  *              application at a micro level.
  */
@@ -125,6 +125,50 @@ public class PlayerController extends OnlineGameTrackerController {
 			}
 			return false;
 		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Updates the row in the Player table that has matching details as the
+	 * parameters. The info in the Player record must be unique to other Player
+	 * records.
+	 * 
+	 * @param id
+	 *            the player_id of the player
+	 * @param fName
+	 *            the first name of the player
+	 * @param lName
+	 *            the last name of the player
+	 * @param address
+	 *            the address of the player
+	 * @param pcode
+	 *            the postal code of the player
+	 * @param prov
+	 *            the province the player is living at
+	 * @param phone
+	 *            the telephone number of the player
+	 * @return true if the insert was successful, false otherwise
+	 */
+	public boolean updatePlayer(int id, String fName, String lName, String address, String pcode, String prov,
+			String phone) {
+		try {
+			if (!this.checkIfAPlayerExists(fName, lName, address, pcode, prov, phone)) {
+
+				db.pst = db.conn.prepareStatement(
+						"update [COMP228-F2016-OnlineGameTracker].[dbo].[Player] set first_name = ?, last_name = ?, address=?, postal_code=?, province=?, phone_number=? where player_id = ?");
+				db.pst.setString(1, fName);
+				db.pst.setString(2, lName);
+				db.pst.setString(3, address);
+				db.pst.setString(4, pcode);
+				db.pst.setString(5, prov);
+				db.pst.setString(6, phone);
+				db.pst.setInt(7, id);
+				db.pst.executeUpdate();
+				return true;
+			}
+			return false;
+		} catch (SQLException e) {
 			return false;
 		}
 	}

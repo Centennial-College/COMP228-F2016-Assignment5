@@ -17,8 +17,8 @@ import models.Player;
 /**
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 9, 2016
- * @version 0.5.7 placed PlayerView controls into gridpanes for better structure
+ * @date December 10, 2016
+ * @version 0.5.8 implemented update Player functionality
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -310,34 +310,54 @@ public class PlayerView extends OnlineGameTrackerView {
 			// prevents redoing same action
 			this.playerIdModifyTF.clear();
 			this.playerFnameModifyTF.clear();
+			this.playerLnameModifyTF.clear();
+			this.playerAddrModifyTF.clear();
+			this.playerPcodeModifyTF.clear();
+			this.playerProvModifyTF.clear();
+			this.playerPhoneModifyTF.clear();
 			this.playerIdModifyTF.setDisable(true);
+			this.playerFnameModifyTF.setDisable(true);
+			this.playerLnameModifyTF.setDisable(true);
+			this.playerAddrModifyTF.setDisable(true);
+			this.playerPcodeModifyTF.setDisable(true);
+			this.playerProvModifyTF.setDisable(true);
+			this.playerPhoneModifyTF.setDisable(true);
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
 		});
+
 		this.updateBtn.setOnAction(e -> {
-			// if
-			// (pc.updateGame(Integer.parseInt(this.playerFnameModifyTF.getText()),
-			// this.playerIdModifyTF.getText())) {
-			// this.updateOrDeleteMsgLabel
-			// .setText(String.format("Successfully updated game #%s to '%s' in
-			// the Game table.",
-			// this.playerFnameModifyTF.getText(),
-			// this.playerIdModifyTF.getText()));
-			// } else {
-			// this.updateOrDeleteMsgLabel.setText(String.format("Failed to
-			// update game #%s: '%s' in the Game table. Players must be
-			// unique!",
-			// this.playerFnameModifyTF.getText(),
-			// this.playerIdModifyTF.getText()));
-			// }
+			if (pc.updatePlayer(Integer.parseInt(this.playerIdModifyTF.getText()), this.playerFnameModifyTF.getText(),
+					this.playerLnameModifyTF.getText(), this.playerAddrModifyTF.getText(),
+					this.playerPcodeModifyTF.getText(), this.playerProvModifyTF.getText(),
+					this.playerPhoneModifyTF.getText())) {
+				this.updateOrDeleteMsgLabel
+						.setText(String.format("Successfully updated details for player #%s in the Player table.",
+								this.playerIdColumn.getText()));
+			} else {
+				this.updateOrDeleteMsgLabel.setText(
+						String.format("Failed to update player #%s in the Player table. Players must be unique!",
+								this.playerIdModifyTF.getText()));
+			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
 
 			this.updateTable();
 
 			// prevents redoing same action
-			this.playerFnameModifyTF.clear();
 			this.playerIdModifyTF.clear();
+			this.playerFnameModifyTF.clear();
+			this.playerLnameModifyTF.clear();
+			this.playerAddrModifyTF.clear();
+			this.playerPcodeModifyTF.clear();
+			this.playerProvModifyTF.clear();
+			this.playerPhoneModifyTF.clear();
 			this.playerIdModifyTF.setDisable(true);
+			this.playerFnameModifyTF.setDisable(true);
+			this.playerLnameModifyTF.setDisable(true);
+			this.playerAddrModifyTF.setDisable(true);
+			this.playerPcodeModifyTF.setDisable(true);
+			this.playerProvModifyTF.setDisable(true);
+			this.playerPhoneModifyTF.setDisable(true);
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
 		});
