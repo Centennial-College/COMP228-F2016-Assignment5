@@ -123,7 +123,7 @@ public class GameController extends OnlineGameTrackerController {
 	 * parameter. Don't need game_title because game_id is the primary key.
 	 * 
 	 * @param id
-	 *            the game_id of the row to be updated
+	 *            the game_id of the row to be deleted
 	 * @return true if the deletion was successful, false otherwise
 	 */
 	public boolean deleteGame(int id) {

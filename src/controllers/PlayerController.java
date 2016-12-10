@@ -9,8 +9,8 @@ import models.Player;
 /**
  * @file PlayerController.java
  * @author Kevin Ma | #: 300867968
- * @date December 9, 2016
- * @version v0.5.7 placed PlayerView controls into gridpanes for better structure
+ * @date December 10, 2016
+ * @version 0.6.0 implemented Delete Player functionality, finished PlayerView
  * @description This class defines the behaviors of the Player view for this
  *              application at a micro level.
  */
@@ -168,6 +168,27 @@ public class PlayerController extends OnlineGameTrackerController {
 				return true;
 			}
 			return false;
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Deletes the row in the Player table that has a matching player_id as the
+	 * parameter. Don't need other details as parameters because player_id is
+	 * the primary key.
+	 * 
+	 * @param id
+	 *            the player_id of the row to be deleted
+	 * @return true if the deletion was successful, false otherwise
+	 */
+	public boolean deletePlayer(int id) {
+		try {
+			db.pst = db.conn
+					.prepareStatement("delete from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where player_id = ?");
+			db.pst.setInt(1, id);
+			db.pst.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			return false;
 		}

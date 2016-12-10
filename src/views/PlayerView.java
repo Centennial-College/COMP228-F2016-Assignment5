@@ -18,7 +18,7 @@ import models.Player;
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 10, 2016
- * @version 0.5.8 implemented update Player functionality
+ * @version 0.6.0 implemented Delete Player functionality, finished PlayerView
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -290,19 +290,15 @@ public class PlayerView extends OnlineGameTrackerView {
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
-			// if
-			// (pc.deleteGame(Integer.parseInt(this.playerFnameModifyTF.getText())))
-			// {
-			// this.updateOrDeleteMsgLabel.setText("Successfully deleted game #"
-			// + this.playerFnameModifyTF.getText()
-			// + " '" + this.playerIdModifyTF.getText() + "' from the Game
-			// table.");
-			// } else {
-			// this.updateOrDeleteMsgLabel.setText("Failed to delete game #" +
-			// this.playerFnameModifyTF.getText()
-			// + " '" + this.playerIdModifyTF.getText() + "' from the Game
-			// table.");
-			// }
+			if (pc.deletePlayer(Integer.parseInt(this.playerIdModifyTF.getText()))) {
+				this.updateOrDeleteMsgLabel.setText("Successfully deleted player #" + this.playerIdModifyTF.getText()
+						+ " '" + this.playerFnameModifyTF.getText() + " " + this.playerLnameModifyTF.getText()
+						+ "' from the Player table.");
+			} else {
+				this.updateOrDeleteMsgLabel.setText("Failed to delete player #" + this.playerIdModifyTF.getText() + " '"
+						+ this.playerFnameModifyTF.getText() + " " + this.playerLnameModifyTF.getText()
+						+ "' from the Player table.");
+			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
 
 			this.updateTable();
