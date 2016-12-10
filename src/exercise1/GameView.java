@@ -170,7 +170,7 @@ public class GameView extends OnlineGameTrackerView {
 				this.addMsgLabel
 						.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
 			} else {
-				this.addMsgLabel.setText("Faild to add '" + this.gameTitleInputTF.getText()
+				this.addMsgLabel.setText("Failed to add '" + this.gameTitleInputTF.getText()
 						+ "' to the Game table. It already exists within the Game table.");
 			}
 
@@ -228,7 +228,8 @@ public class GameView extends OnlineGameTrackerView {
 	 * Updates the table after a change has been made.
 	 */
 	private void updateTable() {
-		this.table.getItems().clear();
+		if (this.table.getItems().size() > 0)
+			this.table.getItems().clear();
 		this.table.getItems().addAll(gc.selectAll());
 	}
 

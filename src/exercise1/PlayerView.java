@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 9, 2016
- * @version 0.5.3 added controls to PlayerView
+ * @version 0.5.5 implemented 'Add a Player' functionality
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -80,7 +80,7 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.addEventListeners();
 
 		// populate the table
-		// this.table.setItems(pc.selectAll());
+		this.table.setItems(pc.selectAll());
 
 		this.resetTab();
 	}
@@ -248,14 +248,15 @@ public class PlayerView extends OnlineGameTrackerView {
 
 		// Button Event Handlers
 		this.addBtn.setOnAction(e -> {
-			// if (pc.insertIntoGame(this.playerFnameInputTF.getText())) {
-			// this.addMsgLabel
-			// .setText("Successfully added '" +
-			// this.playerFnameInputTF.getText() + "' to the Game table.");
-			// } else {
-			// this.addMsgLabel.setText("Faild to add '" +
-			// this.playerFnameInputTF.getText() + "' to the Game table.");
-			// }
+			if (pc.insertIntoPlayer(this.playerFnameInputTF.getText(), this.playerLnameInputTF.getText(),
+					this.playerAddrInputTF.getText(), this.playerPcodeInputTF.getText(),
+					this.playerProvInputTF.getText(), this.playerPhoneInputTF.getText())) {
+				this.addMsgLabel.setText("Successfully added '" + this.playerFnameInputTF.getText() + " "
+						+ this.playerLnameInputTF.getText() + "' to the Player table.");
+			} else {
+				this.addMsgLabel.setText("Failed to add '" + this.playerFnameInputTF.getText() + " "
+						+ this.playerLnameInputTF.getText() + "' to the Player table.");
+			}
 
 			this.addMsgLblHBox.setManaged(true);
 
@@ -263,6 +264,11 @@ public class PlayerView extends OnlineGameTrackerView {
 
 			// prevents redoing same action
 			this.playerFnameInputTF.clear();
+			this.playerLnameInputTF.clear();
+			this.playerAddrInputTF.clear();
+			this.playerPcodeInputTF.clear();
+			this.playerProvInputTF.clear();
+			this.playerPhoneInputTF.clear();
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
@@ -322,8 +328,9 @@ public class PlayerView extends OnlineGameTrackerView {
 	 * Updates the table after a change has been made.
 	 */
 	private void updateTable() {
-		this.table.getItems().clear();
-		// this.table.getItems().addAll(pc.selectAll());
+		if (this.table.getItems().size() > 0)
+			this.table.getItems().clear();
+		this.table.getItems().addAll(pc.selectAll());
 	}
 
 	/**
@@ -375,7 +382,7 @@ public class PlayerView extends OnlineGameTrackerView {
 		this.playerLnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 		// -----------------------------------------------------------------------------------------
 		this.playerAddrColumn = new TableColumn<>("Address");
-		this.playerAddrColumn.setCellValueFactory(new PropertyValueFactory<>("addres"));
+		this.playerAddrColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
 		// -----------------------------------------------------------------------------------------
 		this.playerPcodeColumn = new TableColumn<>("Postal Code");
 		this.playerPcodeColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
