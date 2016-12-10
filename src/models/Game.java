@@ -9,7 +9,7 @@ package models;
  * 
  */
 
-public class GameModel {
+public class Game {
 	// INSTANCE VARIABLES
 	// =============================================================================================
 	private final int gameId;
@@ -33,7 +33,7 @@ public class GameModel {
 
 	// CONSTRUCTOR
 	// =============================================================================================
-	public GameModel(int id) {
+	public Game(int id) {
 		this.gameId = id;
 	}
 }

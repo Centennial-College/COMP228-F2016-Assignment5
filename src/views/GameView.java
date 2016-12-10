@@ -8,7 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import models.GameModel;
+import models.Game;
 
 /**
  * @file GameView.java
@@ -29,12 +29,12 @@ public class GameView extends OnlineGameTrackerView {
 
 	// TableView - can't be in abstract class due to typing problems. I tried =(
 	// ---------------------------------------------------------------------------------------------
-	private TableView<GameModel> table;
+	private TableView<Game> table;
 
 	// read
 	// ---------------------------------------------------------------------------------------------
-	private TableColumn<GameModel, Integer> gameIdColumn;
-	private TableColumn<GameModel, String> gameTitleColumn;
+	private TableColumn<Game, Integer> gameIdColumn;
+	private TableColumn<Game, String> gameTitleColumn;
 
 	// update/delete
 	// ---------------------------------------------------------------------------------------------
@@ -88,8 +88,8 @@ public class GameView extends OnlineGameTrackerView {
 	public void resetTab() {
 
 		// titledpanes default expanded/collapsed display
-		this.updateOrDeleteTitledPane.setExpanded(true);
-		this.addTitledPane.setExpanded(false);
+		this.addTitledPane.setExpanded(true);
+		this.updateOrDeleteTitledPane.setExpanded(false);
 
 		// disable buttons by default
 		this.addBtn.setDisable(true);
@@ -140,7 +140,7 @@ public class GameView extends OnlineGameTrackerView {
 				this.updateOrDeleteMsgLblHBox.setManaged(false);
 
 				// populate textfields with data from selected table row
-				GameModel tmpGame = this.table.getSelectionModel().getSelectedItem();
+				Game tmpGame = this.table.getSelectionModel().getSelectedItem();
 				this.gameIdModifyTF.setText(tmpGame.getGameId() + "");
 				this.gameTitleModifyTF.setText(tmpGame.getGameTitle());
 			}
@@ -242,7 +242,7 @@ public class GameView extends OnlineGameTrackerView {
 	 */
 	private void addContentsToContainers() {
 		// table view
-		this.table = new TableView<GameModel>();
+		this.table = new TableView<Game>();
 		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
 		this.gameIdColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.25));
 		this.gameTitleColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));

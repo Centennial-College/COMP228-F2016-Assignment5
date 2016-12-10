@@ -1,6 +1,7 @@
 package exercise1;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
 import views.GameView;
 import views.PlayerView;
@@ -21,7 +22,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
  * 
  */
 
-public class OnlineGameTracker extends Application {
+public class OnlineGameTrackerApp extends Application {
 	// INSTANCE VARIABLES
 	// =============================================================================================
 	Stage window;
@@ -54,12 +55,10 @@ public class OnlineGameTracker extends Application {
 		tabbedPane.getTabs().addAll(gameTab = new GameView().getTab(), playerTab = new PlayerView().getTab(),
 				playerAndGameTab = new Tab("Player and Game"));
 		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		tabbedPane.setStyle("-fx-background-color: #1d1d1d");
 
-		// Stage and scene configuration
-		Scene scene = new Scene(tabbedPane);
-		scene.getStylesheets().add("exercise1/DarkTheme.css");
-		window.setScene(scene);
-		window.setResizable(false);
-		window.show();
-	}
+	// Stage and scene configuration
+	Scene scene = new Scene(
+			tabbedPane);scene.getStylesheets().add("exercise1/DarkTheme.css");window.setScene(scene);window.setResizable(false);window.show();
+}
 }

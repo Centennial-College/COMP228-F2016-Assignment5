@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import models.GameModel;
+import models.Game;
 
 /**
  * @file GameController.java
@@ -23,10 +23,10 @@ public class GameController extends OnlineGameTrackerController {
 	 * Returns all records in the Game table as an ObservableList
 	 */
 	@Override
-	public ObservableList<GameModel> selectAll() {
+	public ObservableList<Game> selectAll() {
 		// temp variables
-		ObservableList<GameModel> gameList;
-		GameModel gameRecord;
+		ObservableList<Game> gameList;
+		Game gameRecord;
 
 		gameList = FXCollections.observableArrayList();
 
@@ -34,7 +34,7 @@ public class GameController extends OnlineGameTrackerController {
 			db.pst = db.conn.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game];");
 			db.rs = db.pst.executeQuery();
 			while (db.rs.next()) {
-				gameRecord = new GameModel(db.rs.getInt(1));
+				gameRecord = new Game(db.rs.getInt(1));
 				gameRecord.setGameTitle(db.rs.getString(2));
 				gameList.add(gameRecord);
 			}

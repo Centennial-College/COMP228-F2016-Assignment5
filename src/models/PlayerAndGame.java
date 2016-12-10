@@ -10,7 +10,7 @@ package models;
  * 
  */
 
-public class PlayerAndGameModel {
+public class PlayerAndGame {
 	// INSTANCE VARIABLES
 	// =============================================================================================
 	private int playerGameId;
@@ -44,7 +44,7 @@ public class PlayerAndGameModel {
 
 	// CONSTRUCTOR
 	// =============================================================================================
-	public PlayerAndGameModel(int playerGameId, int gameId, int playerId, String playingDate, String score) {
+	public PlayerAndGame(int playerGameId, int gameId, int playerId, String playingDate, String score) {
 		this.playerGameId = playerGameId;
 		this.gameId = gameId;
 		this.playerId = playerId;

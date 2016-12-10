@@ -2,6 +2,7 @@ package views;
 
 import controllers.PlayerController;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,13 +12,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import models.PlayerModel;
+import models.Player;
 
 /**
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
  * @date December 9, 2016
- * @version 0.5.6 implemented event handler for table row selected
+ * @version 0.5.7 placed PlayerView controls into gridpanes for better structure
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -32,17 +33,17 @@ public class PlayerView extends OnlineGameTrackerView {
 
 	// TableView - can't be in abstract class due to typing problems. I tried =(
 	// ---------------------------------------------------------------------------------------------
-	private TableView<PlayerModel> table;
+	private TableView<Player> table;
 
 	// read
 	// ---------------------------------------------------------------------------------------------
-	private TableColumn<PlayerModel, Integer> playerIdColumn;
-	private TableColumn<PlayerModel, String> playerFnameColumn;
-	private TableColumn<PlayerModel, String> playerLnameColumn;
-	private TableColumn<PlayerModel, String> playerAddrColumn;
-	private TableColumn<PlayerModel, String> playerPcodeColumn;
-	private TableColumn<PlayerModel, String> playerProvColumn;
-	private TableColumn<PlayerModel, String> playerPhoneColumn;
+	private TableColumn<Player, Integer> playerIdColumn;
+	private TableColumn<Player, String> playerFnameColumn;
+	private TableColumn<Player, String> playerLnameColumn;
+	private TableColumn<Player, String> playerAddrColumn;
+	private TableColumn<Player, String> playerPcodeColumn;
+	private TableColumn<Player, String> playerProvColumn;
+	private TableColumn<Player, String> playerPhoneColumn;
 
 	// update/delete
 	// ---------------------------------------------------------------------------------------------
@@ -107,8 +108,8 @@ public class PlayerView extends OnlineGameTrackerView {
 	public void resetTab() {
 
 		// titledpanes default expanded/collapsed display
-		this.updateOrDeleteTitledPane.setExpanded(true);
-		this.addTitledPane.setExpanded(false);
+		this.addTitledPane.setExpanded(true);
+		this.updateOrDeleteTitledPane.setExpanded(false);
 
 		// disable buttons by default
 		this.addBtn.setDisable(true);
@@ -209,7 +210,7 @@ public class PlayerView extends OnlineGameTrackerView {
 				this.updateOrDeleteMsgLblHBox.setManaged(false);
 
 				// populate textfields with data from selected table row
-				PlayerModel tmpPlayer = this.table.getSelectionModel().getSelectedItem();
+				Player tmpPlayer = this.table.getSelectionModel().getSelectedItem();
 				this.playerIdModifyTF.setText(tmpPlayer.getPlayerId() + "");
 				this.playerFnameModifyTF.setText(tmpPlayer.getFirstName());
 				this.playerLnameModifyTF.setText(tmpPlayer.getLastName());
@@ -356,7 +357,7 @@ public class PlayerView extends OnlineGameTrackerView {
 	 */
 	private void addContentsToContainers() {
 		// table view
-		this.table = new TableView<PlayerModel>();
+		this.table = new TableView<Player>();
 		this.table.getColumns().addAll(this.playerIdColumn, this.playerFnameColumn, this.playerLnameColumn,
 				this.playerAddrColumn, this.playerPcodeColumn, this.playerProvColumn, this.playerPhoneColumn);
 		this.playerIdColumn.prefWidthProperty().bind(this.table.widthProperty().divide(7));
@@ -373,23 +374,40 @@ public class PlayerView extends OnlineGameTrackerView {
 		GridPane updateDeleteGridPane = new GridPane();
 		updateDeleteGridPane.setAlignment(Pos.CENTER);
 		updateDeleteGridPane.setHgap(10);
-//		updateDeleteGridPane.setVgap(10);
-//		updateDeleteGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
-		
+		updateDeleteGridPane.setVgap(10);
+		// updateDeleteGridPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+
 		updateDeleteGridPane.add(this.playerIdModifyTF, 0, 0);
 		updateDeleteGridPane.add(this.playerFnameModifyTF, 1, 0);
 		updateDeleteGridPane.add(this.playerLnameModifyTF, 2, 0);
 		updateDeleteGridPane.add(this.playerAddrModifyTF, 3, 0);
-		
+		updateDeleteGridPane.add(this.playerPcodeModifyTF, 0, 1);
+		updateDeleteGridPane.add(this.playerProvModifyTF, 1, 1);
+		updateDeleteGridPane.add(this.playerPhoneModifyTF, 2, 1);
+		updateDeleteGridPane.add(this.updateBtn, 1, 2);
+		updateDeleteGridPane.add(this.deleteBtn, 2, 2);
+
+		GridPane.setHalignment(this.updateBtn, HPos.RIGHT);
+
 		this.updateOrDeleteControlsHBox.getChildren().addAll(updateDeleteGridPane);
-//		this.updateOrDeleteControlsHBox.getChildren().addAll(this.playerIdModifyTF, this.playerFnameModifyTF,
-//				this.playerLnameModifyTF, this.playerAddrModifyTF, this.playerPcodeModifyTF, this.playerProvModifyTF,
-//				this.playerPhoneModifyTF, this.updateBtn, this.deleteBtn);
 
 		// add box
-//		this.addControlsHBox.getChildren().addAll(this.playerFnameInputTF, this.playerLnameInputTF,
-//				this.playerAddrInputTF, this.playerPcodeInputTF, this.playerProvInputTF, this.playerPhoneInputTF,
-//				this.addBtn);
+		GridPane addGridPane = new GridPane();
+		addGridPane.setAlignment(Pos.CENTER);
+		addGridPane.setHgap(10);
+		addGridPane.setVgap(10);
+
+		addGridPane.add(this.playerFnameInputTF, 0, 0);
+		addGridPane.add(this.playerLnameInputTF, 1, 0);
+		addGridPane.add(this.playerAddrInputTF, 2, 0);
+		addGridPane.add(this.playerPcodeInputTF, 3, 0);
+		addGridPane.add(this.playerProvInputTF, 0, 1);
+		addGridPane.add(this.playerPhoneInputTF, 1, 1);
+		addGridPane.add(this.addBtn, 1, 2);
+
+		GridPane.setHalignment(this.addBtn, HPos.RIGHT);
+
+		this.addControlsHBox.getChildren().addAll(addGridPane);
 	}
 
 	/**
