@@ -61,6 +61,7 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 				// playerAndGameRecord.setPlayer(this.selectAPlayer(playerAndGameRecord.getPlayerId()));
 				playerAndGameList.add(playerAndGameRecord);
 			}
+			
 			return playerAndGameList;
 		} catch (SQLException e) {
 			return null;
@@ -74,7 +75,7 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 	 *            the player's id
 	 * @return the matching player, or null if not found
 	 */
-	private Player selectAPlayer(int id) {
+	public Player selectAPlayer(int id) {
 		try {
 			db.pst = db.conn.prepareStatement(
 					"select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where player_id = ?");
@@ -103,7 +104,7 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 	 *            the game's id
 	 * @return the matching game, or null if not found
 	 */
-	private Game selectAGame(int id) {
+	public Game selectAGame(int id) {
 		try {
 			db.pst = db.conn
 					.prepareStatement("select * from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where game_id = ?");

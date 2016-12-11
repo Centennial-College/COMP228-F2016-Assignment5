@@ -1,5 +1,9 @@
 package views;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+
 import controllers.GameController;
 import controllers.PlayerAndGameController;
 import controllers.PlayerController;
@@ -18,6 +22,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
+import javafx.util.converter.DateTimeStringConverter;
+import javafx.util.converter.LocalDateStringConverter;
 import models.Game;
 import models.Player;
 import models.PlayerAndGame;
@@ -25,7 +32,7 @@ import models.PlayerAndGame;
 /**
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
- * @date December 10, 2016
+ * @date December 11, 2016
  * @version 0.6.3 - implemented add functionality to PlayerAndGameView
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
@@ -77,6 +84,8 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	private TextField scoreTFMod;
 	private Button updateBtn;
 	private Button deleteBtn;
+	private Player focusedPlayer;
+	private Game focusedGame;
 
 	// add
 	// ---------------------------------------------------------------------------------------------
@@ -221,44 +230,53 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	 */
 	private void addEventListeners() {
 		// TableView Event Handlers - when selecting a different record
-		// this.table.getSelectionModel().selectedItemProperty().addListener(e
-		// -> {
-		//
-		// // to prevent errors, when removing all items from table
-		// if (this.table.getItems().size() > 0 &&
-		// this.table.getSelectionModel().getSelectedItem() != null) {
-		//
-		// // switch focus to the update/delete titled pane
-		// this.updateOrDeleteTitledPane.setExpanded(true);
-		// this.addTitledPane.setExpanded(false);
-		//
-		// // enable buttons to interact with selected record
-		// this.updateBtn.setDisable(false);
-		// this.deleteBtn.setDisable(false);
-		//
-		// // enable TextFields so that the selected row can be edited
-		// this.playerFnameModifyTF.setDisable(false);
-		// this.playerLnameModifyTF.setDisable(false);
-		// this.playerAddrModifyTF.setDisable(false);
-		// this.playerPcodeModifyTF.setDisable(false);
-		// this.playerProvModifyTF.setDisable(false);
-		// this.playerPhoneModifyTF.setDisable(false);
-		//
-		// // clear and hide previous message when selecting new record
-		// this.updateOrDeleteMsgLabel.setText("");
-		// this.updateOrDeleteMsgLblHBox.setManaged(false);
-		//
-		// // populate textfields with data from selected table row
-		// Player tmpPlayer = this.table.getSelectionModel().getSelectedItem();
-		// this.playerIdModifyTF.setText(tmpPlayer.getPlayerId() + "");
-		// this.playerFnameModifyTF.setText(tmpPlayer.getFirstName());
-		// this.playerLnameModifyTF.setText(tmpPlayer.getLastName());
-		// this.playerAddrModifyTF.setText(tmpPlayer.getAddress());
-		// this.playerPcodeModifyTF.setText(tmpPlayer.getPostalCode());
-		// this.playerProvModifyTF.setText(tmpPlayer.getProvince());
-		// this.playerPhoneModifyTF.setText(tmpPlayer.getPhoneNumber());
-		// }
-		// });
+		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
+
+			// to prevent errors, when removing all items from table
+			if (this.table.getItems().size() > 0 && this.table.getSelectionModel().getSelectedItem() != null) {
+
+				// switch focus to the update/delete titled pane
+				this.updateOrDeleteTitledPane.setExpanded(true);
+				this.addTitledPane.setExpanded(false);
+
+				// enable buttons to interact with selected record
+				this.updateBtn.setDisable(false);
+				this.deleteBtn.setDisable(false);
+
+				// enable modify fields so that the selected row can be edited
+				this.playerTFMod.setDisable(false);
+				this.gameTFMod.setDisable(false);
+				this.playDateDPMod.setDisable(false);
+				this.scoreTFMod.setDisable(false);
+
+				// clear and hide previous message when selecting new record
+				this.updateOrDeleteMsgLabel.setText("");
+				this.updateOrDeleteMsgLblHBox.setManaged(false);
+
+				// populate textfields with data from selected table row
+				PlayerAndGame tmpPG = this.table.getSelectionModel().getSelectedItem();
+				focusedPlayer = pgc.selectAPlayer(tmpPG.getPlayerId());
+				focusedGame = pgc.selectAGame(tmpPG.getGameId());
+
+				this.playerTFMod.setText(focusedPlayer.toString());
+				this.gameTFMod.setText(focusedGame.toString());
+				this.scoreTFMod.setText(tmpPG.getScore());
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate localDate = LocalDate.parse(tmpPG.getPlayingDate(), formatter);
+				this.playDateDPMod.setValue(localDate);
+
+				// details
+				this.playerIdLbl.setText(focusedPlayer.getPlayerId() + "");
+				this.fnameLbl.setText(focusedPlayer.getFirstName());
+				this.lnameLbl.setText(focusedPlayer.getLastName());
+				
+				this.gameIdLbl.setText(focusedGame.getGameId()+"");
+				this.gameTitleLbl.setText(focusedGame.getGameTitle());
+				this.gameDateLbl.setText(tmpPG.getPlayingDate());
+				this.gameScoreLbl.setText(tmpPG.getScore());
+			}
+		});
 		// -----------------------------------------------------------------------------------------
 
 		// Add Field Event Handlers
@@ -276,6 +294,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			this.inputFieldsHandler();
 		});
 
+		// Update/Delete Field Event Handlers
 		// only allows updating/deleting from the table if text is not null
 		// this.playerFnameModifyTF.textProperty().addListener(e -> {
 		// this.modifyTextFieldsHandler();
