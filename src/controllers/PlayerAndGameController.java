@@ -12,7 +12,8 @@ import models.PlayerAndGame;
  * @file PlayerAndGameController.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 0.7.0 finished PlayerAndGameView; added delete functionality
+ * @version 1.0.0 initial release; can no longer add the same guy twice to same
+ *          player
  * @description This class defines the behaviors of the PlayerAndGame view for
  *              this application at a micro level.
  */
@@ -58,6 +59,38 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 			}
 
 			return playerAndGameList;
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Selects and returns games which have not already been added to the player
+	 * passed in as parameter
+	 * 
+	 * @param pid
+	 *            player_id
+	 * @return list of all games not yet added to the player
+	 */
+	public ObservableList<Game> selectAllUnaddedGames(int pid) {
+		// temp variables
+		ObservableList<Game> gameList;
+		Game g;
+
+		gameList = FXCollections.observableArrayList();
+
+		try {
+			db.pst = db.conn.prepareStatement(
+					"select game_id, game_title from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where game_id not in (select b.game_id from [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame] as a join [COMP228-F2016-OnlineGameTracker].[dbo].[Game] as b on a.game_id = b.game_id where player_id = ?);");
+			db.pst.setInt(1, pid);
+			db.rs = db.pst.executeQuery();
+			while (db.rs.next()) {
+				g = new Game(db.rs.getInt(1));
+				g.setGameTitle(db.rs.getString(2));
+				gameList.add(g);
+			}
+
+			return gameList;
 		} catch (SQLException e) {
 			return null;
 		}

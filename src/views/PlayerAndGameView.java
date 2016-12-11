@@ -29,7 +29,8 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 0.7.0 finished PlayerAndGameView; added delete functionality
+ * @version 1.0.0 initial release; can no longer add the same guy twice to same
+ *          player
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -135,13 +136,6 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		} else {
 			this.playersCB.setItems(pc.selectAll());
 		}
-
-		if (this.gamesCB.getItems().size() > 0) {
-			this.gamesCB.getItems().clear();
-			this.gamesCB.getItems().addAll(gc.selectAll());
-		} else {
-			this.gamesCB.setItems(gc.selectAll());
-		}
 	}
 
 	/**
@@ -205,6 +199,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		// reset ComboBoxes
 		this.gamesCB.getSelectionModel().clearSelection();
 		this.playersCB.getSelectionModel().clearSelection();
+		this.gamesCB.getItems().clear();
 
 		// initially hide the messages until events triggered
 		this.updateOrDeleteMsgLblHBox.setManaged(false);
@@ -243,6 +238,24 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	 * Define behaviors of the controls on the view
 	 */
 	private void addEventListeners() {
+
+		// when player is selected during adding new playerandgame, the game
+		// list gets populated with games that the player hasn't already
+		// played/have recorded
+
+		this.playersCB.getSelectionModel().selectedItemProperty().addListener(e -> {
+			if (this.gamesCB.getItems().size() > 0 && this.playersCB.getSelectionModel().getSelectedItem() != null) {
+				this.gamesCB.getItems().clear();
+				this.gamesCB.getItems().addAll(
+						pgc.selectAllUnaddedGames(this.playersCB.getSelectionModel().getSelectedItem().getPlayerId()));
+			} else if (this.playersCB.getSelectionModel().getSelectedItem() != null) {
+				this.gamesCB.setItems(
+						pgc.selectAllUnaddedGames(this.playersCB.getSelectionModel().getSelectedItem().getPlayerId()));
+			}
+			// this.gamesCB.setItems(
+			// pgc.selectAllUnaddedGames(this.playersCB.getSelectionModel().getSelectedItem().getPlayerId()));
+		});
+
 		// TableView Event Handlers - when selecting a different record
 		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
 
@@ -293,10 +306,10 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 
 		// Add Field Event Handlers
 		// only allows adding to the table if input fields are not empty
-		this.playersCB.setOnAction(e -> {
+		this.playersCB.getSelectionModel().selectedItemProperty().addListener(e -> {
 			this.inputFieldsHandler();
 		});
-		this.gamesCB.setOnAction(e -> {
+		this.gamesCB.getSelectionModel().selectedItemProperty().addListener(e -> {
 			this.inputFieldsHandler();
 		});
 		this.playDateDPIn.setOnAction(e -> {
