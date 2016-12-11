@@ -29,8 +29,7 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 1.0.0 initial release; can no longer add the same guy twice to same
- *          player
+ * @version 1.0.1 - updated PlayerAndGame View, now auto-syncs data accross views
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -204,6 +203,9 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		// initially hide the messages until events triggered
 		this.updateOrDeleteMsgLblHBox.setManaged(false);
 		this.addMsgLblHBox.setManaged(false);
+
+		// in case other view updated data, need to update this view too
+		this.updateTableAndComboBoxes();
 	}
 
 	// PRIVATE METHODS
@@ -378,7 +380,13 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			this.scoreTFMod.clear();
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
-
+			this.playerIdLbl.setText("-");
+			this.fnameLbl.setText("-");
+			this.lnameLbl.setText("-");
+			this.gameIdLbl.setText("-");
+			this.gameTitleLbl.setText("-");
+			this.gameDateLbl.setText("-");
+			this.gameScoreLbl.setText("-");
 		});
 
 		this.updateBtn.setOnAction(e -> {
@@ -402,6 +410,13 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			this.scoreTFMod.clear();
 			this.updateBtn.setDisable(true);
 			this.deleteBtn.setDisable(true);
+			this.playerIdLbl.setText("-");
+			this.fnameLbl.setText("-");
+			this.lnameLbl.setText("-");
+			this.gameIdLbl.setText("-");
+			this.gameTitleLbl.setText("-");
+			this.gameDateLbl.setText("-");
+			this.gameScoreLbl.setText("-");
 		});
 	}
 
