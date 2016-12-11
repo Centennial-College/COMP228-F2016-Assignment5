@@ -67,6 +67,7 @@ public class OnlineGameTrackerApp extends Application {
 		tabbedPane.getSelectionModel().selectedItemProperty().addListener(e -> {
 			gv.resetTab();
 			pv.resetTab();
+			pgv.resetTab();
 		});
 
 		// Stage and scene configuration

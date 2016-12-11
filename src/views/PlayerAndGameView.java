@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -25,7 +26,7 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 10, 2016
- * @version 0.6.2 - completed layout for PlayerAndGameView
+ * @version 0.6.3 - implemented add functionality to PlayerAndGameView
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -72,6 +73,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	private TextField gameTFMod;
 	private TextField playerTFMod;
 	private TextField playDateTFMod;
+	private DatePicker playDateDPMod;
 	private TextField scoreTFMod;
 	private Button updateBtn;
 	private Button deleteBtn;
@@ -79,6 +81,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	// add
 	// ---------------------------------------------------------------------------------------------
 	private TextField playDateTFIn;
+	private DatePicker playDateDPIn;
 	private TextField scoreTFIn;
 	private ComboBox<Game> gamesCB;
 	private ComboBox<Player> playersCB;
@@ -100,12 +103,40 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		super.start();
 		this.initializeControls();
 		this.addContentsToContainers();
-		// this.addEventListeners();
+		this.addEventListeners();
+		this.updateTableAndComboBoxes();
 
 		// populate the table
-		// this.table.setItems(pc.selectAll());
+		// this.table.setItems(pgc.selectAll());
 
 		this.resetTab();
+	}
+
+	/**
+	 * Updates the table and combo boxes after a change has been made.
+	 */
+	private void updateTableAndComboBoxes() {
+		// cant clear items if the list is empty
+		if (this.table.getItems().size() > 0) {
+			this.table.getItems().clear();
+			this.table.getItems().addAll(pgc.selectAll());
+		} else {
+			this.table.setItems(pgc.selectAll());
+		}
+
+		if (this.playersCB.getItems().size() > 0) {
+			this.playersCB.getItems().clear();
+			this.playersCB.getItems().addAll(pc.selectAll());
+		} else {
+			this.playersCB.setItems(pc.selectAll());
+		}
+
+		if (this.gamesCB.getItems().size() > 0) {
+			this.gamesCB.getItems().clear();
+			this.gamesCB.getItems().addAll(gc.selectAll());
+		} else {
+			this.gamesCB.setItems(gc.selectAll());
+		}
 	}
 
 	/**
@@ -125,7 +156,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	public void resetTab() {
 
 		// deselect all rows
-		// this.table.getSelectionModel().clearSelection();
+		this.table.getSelectionModel().clearSelection();
 
 		// titledpanes default expanded/collapsed display
 		this.addTitledPane.setExpanded(true);
@@ -156,11 +187,15 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		// cannot edit a non-referenced record
 		this.playDateTFMod.setDisable(true);
 		this.scoreTFMod.setDisable(true);
+		this.playDateDPMod.setDisable(true);
+
+		// reset DatePicker
+		this.playDateDPIn.setValue(null);
+		this.playDateDPMod.setValue(null);
 
 		// reset ComboBoxes
-		this.gamesCB.getItems().add(new Game(5));
-		this.playersCB.getItems().add(new Player(23));
 		this.gamesCB.getSelectionModel().clearSelection();
+		this.playersCB.getSelectionModel().clearSelection();
 
 		// initially hide the messages until events triggered
 		this.updateOrDeleteMsgLblHBox.setManaged(false);
@@ -169,6 +204,222 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 
 	// PRIVATE METHODS
 	// =============================================================================================
+	/**
+	 * Enables the add button only when all the input fields are not empty
+	 */
+	private void inputFieldsHandler() {
+		if (this.playersCB.getSelectionModel().getSelectedItem() != null
+				&& this.gamesCB.getSelectionModel().getSelectedItem() != null && this.playDateDPIn.getValue() != null
+				&& this.scoreTFIn.getText().length() > 0)
+			this.addBtn.setDisable(false);
+		else
+			this.addBtn.setDisable(true);
+	}
+
+	/**
+	 * Define behaviors of the controls on the view
+	 */
+	private void addEventListeners() {
+		// TableView Event Handlers - when selecting a different record
+		// this.table.getSelectionModel().selectedItemProperty().addListener(e
+		// -> {
+		//
+		// // to prevent errors, when removing all items from table
+		// if (this.table.getItems().size() > 0 &&
+		// this.table.getSelectionModel().getSelectedItem() != null) {
+		//
+		// // switch focus to the update/delete titled pane
+		// this.updateOrDeleteTitledPane.setExpanded(true);
+		// this.addTitledPane.setExpanded(false);
+		//
+		// // enable buttons to interact with selected record
+		// this.updateBtn.setDisable(false);
+		// this.deleteBtn.setDisable(false);
+		//
+		// // enable TextFields so that the selected row can be edited
+		// this.playerFnameModifyTF.setDisable(false);
+		// this.playerLnameModifyTF.setDisable(false);
+		// this.playerAddrModifyTF.setDisable(false);
+		// this.playerPcodeModifyTF.setDisable(false);
+		// this.playerProvModifyTF.setDisable(false);
+		// this.playerPhoneModifyTF.setDisable(false);
+		//
+		// // clear and hide previous message when selecting new record
+		// this.updateOrDeleteMsgLabel.setText("");
+		// this.updateOrDeleteMsgLblHBox.setManaged(false);
+		//
+		// // populate textfields with data from selected table row
+		// Player tmpPlayer = this.table.getSelectionModel().getSelectedItem();
+		// this.playerIdModifyTF.setText(tmpPlayer.getPlayerId() + "");
+		// this.playerFnameModifyTF.setText(tmpPlayer.getFirstName());
+		// this.playerLnameModifyTF.setText(tmpPlayer.getLastName());
+		// this.playerAddrModifyTF.setText(tmpPlayer.getAddress());
+		// this.playerPcodeModifyTF.setText(tmpPlayer.getPostalCode());
+		// this.playerProvModifyTF.setText(tmpPlayer.getProvince());
+		// this.playerPhoneModifyTF.setText(tmpPlayer.getPhoneNumber());
+		// }
+		// });
+		// -----------------------------------------------------------------------------------------
+
+		// Add Field Event Handlers
+		// only allows adding to the table if input fields are not empty
+		this.playersCB.setOnAction(e -> {
+			this.inputFieldsHandler();
+		});
+		this.gamesCB.setOnAction(e -> {
+			this.inputFieldsHandler();
+		});
+		this.playDateDPIn.setOnAction(e -> {
+			this.inputFieldsHandler();
+		});
+		this.scoreTFIn.textProperty().addListener(e -> {
+			this.inputFieldsHandler();
+		});
+
+		// only allows updating/deleting from the table if text is not null
+		// this.playerFnameModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// this.playerLnameModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// this.playerAddrModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// this.playerPcodeModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// this.playerProvModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// this.playerPhoneModifyTF.textProperty().addListener(e -> {
+		// this.modifyTextFieldsHandler();
+		// });
+		// //
+		// -----------------------------------------------------------------------------------------
+
+		// Button Event Handlers
+		this.addBtn.setOnAction(e -> {
+			Game g = this.gamesCB.getSelectionModel().getSelectedItem();
+			Player p = this.playersCB.getSelectionModel().getSelectedItem();
+
+			if (pgc.insertIntoPlayerAndGame(g.getGameId(), p.getPlayerId(), this.playDateDPIn.getValue().toString(),
+					this.scoreTFIn.getText())) {
+
+				// if (pc.insertIntoPlayer(this.playerFnameInputTF.getText(),
+				// this.playerLnameInputTF.getText(),
+				// this.playerAddrInputTF.getText(),
+				// this.playerPcodeInputTF.getText(),
+				// this.playerProvInputTF.getText(),
+				// this.playerPhoneInputTF.getText())) {
+				this.addMsgLabel.setText("Successfully added '" + g.getGameTitle() + " - " + p.getFirstName() + " "
+						+ p.getLastName() + "' to the PlayerAndGame table.");
+			} else {
+				this.addMsgLabel.setText("Failed to add '" + g.getGameTitle() + " - " + p.getFirstName() + " "
+						+ p.getLastName() + "' to the PlayerAndGame table.");
+			}
+
+			this.addMsgLblHBox.setManaged(true);
+
+			this.updateTableAndComboBoxes();
+
+			// prevents redoing same action
+			this.gamesCB.getSelectionModel().clearSelection();
+			this.playersCB.getSelectionModel().clearSelection();
+			this.playDateDPIn.setValue(null);
+			this.scoreTFIn.setText(null);
+			// this.playerFnameInputTF.clear();
+			// this.playerLnameInputTF.clear();
+			// this.playerAddrInputTF.clear();
+			// this.playerPcodeInputTF.clear();
+			// this.playerProvInputTF.clear();
+			// this.playerPhoneInputTF.clear();
+			this.addBtn.setDisable(true);
+
+		});
+
+		// this.deleteBtn.setOnAction(e -> {
+		// if
+		// (pc.deletePlayer(Integer.parseInt(this.playerIdModifyTF.getText())))
+		// {
+		// this.updateOrDeleteMsgLabel.setText("Successfully deleted player #" +
+		// this.playerIdModifyTF.getText()
+		// + " '" + this.playerFnameModifyTF.getText() + " " +
+		// this.playerLnameModifyTF.getText()
+		// + "' from the Player table.");
+		// } else {
+		// this.updateOrDeleteMsgLabel.setText("Failed to delete player #" +
+		// this.playerIdModifyTF.getText() + " '"
+		// + this.playerFnameModifyTF.getText() + " " +
+		// this.playerLnameModifyTF.getText()
+		// + "' from the Player table.");
+		// }
+		// this.updateOrDeleteMsgLblHBox.setManaged(true);
+		//
+		// this.updateTable();
+		//
+		// // prevents redoing same action
+		// this.playerIdModifyTF.clear();
+		// this.playerFnameModifyTF.clear();
+		// this.playerLnameModifyTF.clear();
+		// this.playerAddrModifyTF.clear();
+		// this.playerPcodeModifyTF.clear();
+		// this.playerProvModifyTF.clear();
+		// this.playerPhoneModifyTF.clear();
+		// this.playerIdModifyTF.setDisable(true);
+		// this.playerFnameModifyTF.setDisable(true);
+		// this.playerLnameModifyTF.setDisable(true);
+		// this.playerAddrModifyTF.setDisable(true);
+		// this.playerPcodeModifyTF.setDisable(true);
+		// this.playerProvModifyTF.setDisable(true);
+		// this.playerPhoneModifyTF.setDisable(true);
+		// this.updateBtn.setDisable(true);
+		// this.deleteBtn.setDisable(true);
+		// });
+		//
+		// this.updateBtn.setOnAction(e -> {
+		// if
+		// (pc.updatePlayer(Integer.parseInt(this.playerIdModifyTF.getText()),
+		// this.playerFnameModifyTF.getText(),
+		// this.playerLnameModifyTF.getText(),
+		// this.playerAddrModifyTF.getText(),
+		// this.playerPcodeModifyTF.getText(),
+		// this.playerProvModifyTF.getText(),
+		// this.playerPhoneModifyTF.getText())) {
+		// this.updateOrDeleteMsgLabel
+		// .setText(String.format("Successfully updated details for player #%s
+		// in the Player table.",
+		// this.playerIdColumn.getText()));
+		// } else {
+		// this.updateOrDeleteMsgLabel.setText(
+		// String.format("Failed to update player #%s in the Player table.
+		// Players must be unique!",
+		// this.playerIdModifyTF.getText()));
+		// }
+		// this.updateOrDeleteMsgLblHBox.setManaged(true);
+		//
+		// this.updateTable();
+		//
+		// // prevents redoing same action
+		// this.playerIdModifyTF.clear();
+		// this.playerFnameModifyTF.clear();
+		// this.playerLnameModifyTF.clear();
+		// this.playerAddrModifyTF.clear();
+		// this.playerPcodeModifyTF.clear();
+		// this.playerProvModifyTF.clear();
+		// this.playerPhoneModifyTF.clear();
+		// this.playerIdModifyTF.setDisable(true);
+		// this.playerFnameModifyTF.setDisable(true);
+		// this.playerLnameModifyTF.setDisable(true);
+		// this.playerAddrModifyTF.setDisable(true);
+		// this.playerPcodeModifyTF.setDisable(true);
+		// this.playerProvModifyTF.setDisable(true);
+		// this.playerPhoneModifyTF.setDisable(true);
+		// this.updateBtn.setDisable(true);
+		// this.deleteBtn.setDisable(true);
+		// });
+	}
+
 	/**
 	 * Adding the initialized controls to their container(s)
 	 */
@@ -243,7 +494,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 
 		updateDeleteGridPane.add(this.playerTFMod, 0, 0);
 		updateDeleteGridPane.add(this.gameTFMod, 1, 0);
-		updateDeleteGridPane.add(this.playDateTFMod, 2, 0);
+		updateDeleteGridPane.add(this.playDateDPMod, 2, 0);
 		updateDeleteGridPane.add(this.scoreTFMod, 3, 0);
 		updateDeleteGridPane.add(this.updateBtn, 1, 2);
 		updateDeleteGridPane.add(this.deleteBtn, 2, 2);
@@ -261,7 +512,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 
 		addGridPane.add(this.playersCB, 0, 0);
 		addGridPane.add(this.gamesCB, 1, 0);
-		addGridPane.add(this.playDateTFIn, 2, 0);
+		addGridPane.add(this.playDateDPIn, 2, 0);
 		addGridPane.add(this.scoreTFIn, 3, 0);
 		// addGridPane.add(this.playerProvInputTF, 0, 1);
 		// addGridPane.add(this.playerPhoneInputTF, 1, 1);
@@ -311,6 +562,12 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		this.playDateTFIn.setPromptText("Playing Date");
 		this.scoreTFIn = new TextField();
 		this.scoreTFIn.setPromptText("Score/Rank");
+
+		// DatePicker
+		this.playDateDPIn = new DatePicker();
+		this.playDateDPIn.setPromptText("Date Last Played");
+		this.playDateDPMod = new DatePicker();
+		this.playDateDPMod.setPromptText("Date Last Played");
 
 		// Labels
 		this.playerIdLbl = new Label();

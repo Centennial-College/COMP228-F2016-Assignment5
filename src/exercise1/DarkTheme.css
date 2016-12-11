@@ -149,6 +149,10 @@
 	-fx-background-insets: 0.0;
 	-fx-padding: 0.0;
  }
+ 
+ .date-picker-popup .label {
+	-fx-text-fill: black;
+}
 
 .text-field {
     -fx-font-size: 12.0pt;
