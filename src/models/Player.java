@@ -3,8 +3,8 @@ package models;
 /**
  * @file Player.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
- * @version 0.5.1 updated Models comments
+ * @date December 10, 2016
+ * @version 0.6.2 - completed layout for PlayerAndGameView
  * @description This class is a model for the Player table in the database.
  * 
  */
@@ -80,5 +80,9 @@ public class Player {
 	// =============================================================================================
 	public Player(int id) {
 		this.playerId = id;
+	}
+
+	public String toString() {
+		return String.format("ID: %d - %s %s", this.playerId, this.firstName, this.lastName);
 	}
 }

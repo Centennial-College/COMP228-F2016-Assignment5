@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
 import views.GameView;
+import views.PlayerAndGameView;
 import views.PlayerView;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
@@ -42,6 +43,7 @@ public class OnlineGameTrackerApp extends Application {
 
 	// Tab that allows manipulation of the PlayerAndGame table
 	// =============================================================================================
+	PlayerAndGameView pgv;
 	Tab playerAndGameTab;
 
 	public static void main(String[] args) {
@@ -56,7 +58,8 @@ public class OnlineGameTrackerApp extends Application {
 		// Initialize Tabbed Pane and Tabs
 		tabbedPane = new TabPane();
 		tabbedPane.getTabs().addAll(gameTab = (gv = new GameView()).getTab(),
-				playerTab = (pv = new PlayerView()).getTab(), playerAndGameTab = new Tab("Player and Game"));
+				playerTab = (pv = new PlayerView()).getTab(),
+				playerAndGameTab = (pgv = new PlayerAndGameView()).getTab());
 		tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		tabbedPane.setStyle("-fx-background-color: #1d1d1d");
 

@@ -71,6 +71,7 @@
 
 .split-pane {
     -fx-padding: 1.0 0.0 0.0 0.0;
+    -fx-background-color: #1d1d1d;
 }
 
 .menu-bar {
@@ -151,6 +152,11 @@
 
 .text-field {
     -fx-font-size: 12.0pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+.combo-box{
+	 -fx-font-size: 12.0pt;
     -fx-font-family: "Segoe UI Semibold";
 }
 

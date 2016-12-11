@@ -3,7 +3,7 @@ package models;
 /**
  * @file PlayerAndGame.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
+ * @date December 10, 2016
  * @version 0.5.1 updated Models comments
  * @description This class is a model for the PlayerAndGame table in the
  *              database.
@@ -18,6 +18,8 @@ public class PlayerAndGame {
 	private int playerId;
 	private String playingDate;
 	private String score;
+	private Player player; // used to extract information to display
+	private Game game; // used to extract information to display
 
 	// PUBLIC PROPERTIES
 	// =============================================================================================
