@@ -2,7 +2,6 @@ package views;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 import controllers.GameController;
 import controllers.PlayerAndGameController;
@@ -22,9 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
-import javafx.util.converter.DateTimeStringConverter;
-import javafx.util.converter.LocalDateStringConverter;
 import models.Game;
 import models.Player;
 import models.PlayerAndGame;
@@ -33,7 +29,7 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 0.6.3 - implemented add functionality to PlayerAndGameView
+ * @version 0.6.5 added event handlers for modification fields
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -198,6 +194,10 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		this.scoreTFMod.setDisable(true);
 		this.playDateDPMod.setDisable(true);
 
+		// cannot edit game or player
+		this.playerTFMod.setDisable(true);
+		this.gameTFMod.setDisable(true);
+
 		// reset DatePicker
 		this.playDateDPIn.setValue(null);
 		this.playDateDPMod.setValue(null);
@@ -226,6 +226,20 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	}
 
 	/**
+	 * Enables the update/delete buttons only when all the modification fields
+	 * are not empty
+	 */
+	private void modifyFieldsHandler() {
+		if (this.playDateDPMod.getValue() != null && this.scoreTFMod.getText().length() > 0) {
+			this.updateBtn.setDisable(false);
+			this.deleteBtn.setDisable(false);
+		} else {
+			this.updateBtn.setDisable(true);
+			this.deleteBtn.setDisable(true);
+		}
+	}
+
+	/**
 	 * Define behaviors of the controls on the view
 	 */
 	private void addEventListeners() {
@@ -244,8 +258,6 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 				this.deleteBtn.setDisable(false);
 
 				// enable modify fields so that the selected row can be edited
-				this.playerTFMod.setDisable(false);
-				this.gameTFMod.setDisable(false);
 				this.playDateDPMod.setDisable(false);
 				this.scoreTFMod.setDisable(false);
 
@@ -270,8 +282,8 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 				this.playerIdLbl.setText(focusedPlayer.getPlayerId() + "");
 				this.fnameLbl.setText(focusedPlayer.getFirstName());
 				this.lnameLbl.setText(focusedPlayer.getLastName());
-				
-				this.gameIdLbl.setText(focusedGame.getGameId()+"");
+
+				this.gameIdLbl.setText(focusedGame.getGameId() + "");
 				this.gameTitleLbl.setText(focusedGame.getGameTitle());
 				this.gameDateLbl.setText(tmpPG.getPlayingDate());
 				this.gameScoreLbl.setText(tmpPG.getScore());
@@ -296,25 +308,12 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 
 		// Update/Delete Field Event Handlers
 		// only allows updating/deleting from the table if text is not null
-		// this.playerFnameModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// this.playerLnameModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// this.playerAddrModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// this.playerPcodeModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// this.playerProvModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// this.playerPhoneModifyTF.textProperty().addListener(e -> {
-		// this.modifyTextFieldsHandler();
-		// });
-		// //
+		this.playDateDPMod.setOnAction(e -> {
+			this.modifyFieldsHandler();
+		});
+		this.scoreTFMod.textProperty().addListener(e -> {
+			this.modifyFieldsHandler();
+		});
 		// -----------------------------------------------------------------------------------------
 
 		// Button Event Handlers
