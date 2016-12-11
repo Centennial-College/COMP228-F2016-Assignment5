@@ -11,8 +11,8 @@ import models.PlayerAndGame;
 /**
  * @file PlayerAndGameController.java
  * @author Kevin Ma | #: 300867968
- * @date December 10, 2016
- * @version 0.6.0 implemented Delete Player functionality, finished PlayerView
+ * @date December 11, 2016
+ * @version 0.7.0 finished PlayerAndGameView; added delete functionality
  * @description This class defines the behaviors of the PlayerAndGame view for
  *              this application at a micro level.
  */
@@ -116,6 +116,20 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 		}
 	}
 
+	/**
+	 * Updates the row in the PlayerAndGame table that has matching details as
+	 * the parameters.
+	 * 
+	 * @param date
+	 *            playing_date
+	 * @param score
+	 *            score
+	 * @param pid
+	 *            playerid
+	 * @param gid
+	 *            gameid
+	 * @return
+	 */
 	public boolean updatePlayerAndGame(String date, String score, int pid, int gid) {
 		try {
 			db.pst = db.conn.prepareStatement(
@@ -124,6 +138,28 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 			db.pst.setString(2, date);
 			db.pst.setInt(3, pid);
 			db.pst.setInt(4, gid);
+			db.pst.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Deletes the record matching the parameters from the PlayerAndGame table
+	 * 
+	 * @param pid
+	 *            player_id
+	 * @param gid
+	 *            game_id
+	 * @return true if successful, false otherwise
+	 */
+	public boolean deletePlayerAndGame(int pid, int gid) {
+		try {
+			db.pst = db.conn.prepareStatement(
+					"delete from [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame] where player_id = ? and game_id = ?");
+			db.pst.setInt(1, pid);
+			db.pst.setInt(2, gid);
 			db.pst.executeUpdate();
 			return true;
 		} catch (SQLException e) {

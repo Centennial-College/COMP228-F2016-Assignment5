@@ -29,7 +29,7 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 0.6.6 added update functionality for PlayerAndGame
+ * @version 0.7.0 finished PlayerAndGameView; added delete functionality
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -343,44 +343,30 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			this.addBtn.setDisable(true);
 		});
 
-		// this.deleteBtn.setOnAction(e -> {
-		// if
-		// (pc.deletePlayer(Integer.parseInt(this.playerIdModifyTF.getText())))
-		// {
-		// this.updateOrDeleteMsgLabel.setText("Successfully deleted player #" +
-		// this.playerIdModifyTF.getText()
-		// + " '" + this.playerFnameModifyTF.getText() + " " +
-		// this.playerLnameModifyTF.getText()
-		// + "' from the Player table.");
-		// } else {
-		// this.updateOrDeleteMsgLabel.setText("Failed to delete player #" +
-		// this.playerIdModifyTF.getText() + " '"
-		// + this.playerFnameModifyTF.getText() + " " +
-		// this.playerLnameModifyTF.getText()
-		// + "' from the Player table.");
-		// }
-		// this.updateOrDeleteMsgLblHBox.setManaged(true);
-		//
-		// this.updateTable();
-		//
-		// // prevents redoing same action
-		// this.playerIdModifyTF.clear();
-		// this.playerFnameModifyTF.clear();
-		// this.playerLnameModifyTF.clear();
-		// this.playerAddrModifyTF.clear();
-		// this.playerPcodeModifyTF.clear();
-		// this.playerProvModifyTF.clear();
-		// this.playerPhoneModifyTF.clear();
-		// this.playerIdModifyTF.setDisable(true);
-		// this.playerFnameModifyTF.setDisable(true);
-		// this.playerLnameModifyTF.setDisable(true);
-		// this.playerAddrModifyTF.setDisable(true);
-		// this.playerPcodeModifyTF.setDisable(true);
-		// this.playerProvModifyTF.setDisable(true);
-		// this.playerPhoneModifyTF.setDisable(true);
-		// this.updateBtn.setDisable(true);
-		// this.deleteBtn.setDisable(true);
-		// });
+		this.deleteBtn.setOnAction(e -> {
+			if (pgc.deletePlayerAndGame(focusedPlayer.getPlayerId(), focusedGame.getGameId())) {
+
+				this.updateOrDeleteMsgLabel.setText("Successfully removed '" + focusedGame.getGameTitle()
+						+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
+						+ focusedPlayer.getLastName() + ".");
+			} else {
+				this.updateOrDeleteMsgLabel.setText("Failed to  remove '" + focusedGame.getGameTitle()
+						+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
+						+ focusedPlayer.getLastName() + ".");
+			}
+			this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+			this.updateTableAndComboBoxes();
+
+			// prevents redoing same action
+			this.gameTFMod.clear();
+			this.playerTFMod.clear();
+			this.playDateDPMod.setValue(null);
+			this.scoreTFMod.clear();
+			this.updateBtn.setDisable(true);
+			this.deleteBtn.setDisable(true);
+
+		});
 
 		this.updateBtn.setOnAction(e -> {
 			if (pgc.updatePlayerAndGame(this.playDateDPMod.getValue().toString(), this.scoreTFMod.getText(),
