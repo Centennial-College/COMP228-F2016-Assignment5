@@ -1,5 +1,6 @@
-package exercise1;
+package views;
 
+import controllers.GameController;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -7,12 +8,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import models.Game;
 
 /**
- * @file OnlineGameTrackerView.java
+ * @file GameView.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
- * @version 0.5.0 implemented add a game functionality to GameView
+ * @date December 10, 2016
+ * @version 0.6.1 implemented Tabs automatically resetting when switching to
+ *          different tab
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -27,13 +30,12 @@ public class GameView extends OnlineGameTrackerView {
 
 	// TableView - can't be in abstract class due to typing problems. I tried =(
 	// ---------------------------------------------------------------------------------------------
-	private TableView<GameModel> table;
-	private ObservableList<GameModel> gameList;
+	private TableView<Game> table;
 
 	// read
 	// ---------------------------------------------------------------------------------------------
-	private TableColumn<GameModel, Integer> gameIdColumn;
-	private TableColumn<GameModel, String> gameTitleColumn;
+	private TableColumn<Game, Integer> gameIdColumn;
+	private TableColumn<Game, String> gameTitleColumn;
 
 	// update/delete
 	// ---------------------------------------------------------------------------------------------
@@ -66,8 +68,7 @@ public class GameView extends OnlineGameTrackerView {
 		this.addEventListeners();
 
 		// populate the table
-		gameList = gc.selectAll();
-		this.table.setItems(gameList);
+		this.table.setItems(gc.selectAll());
 
 		this.resetTab();
 	}
@@ -87,9 +88,12 @@ public class GameView extends OnlineGameTrackerView {
 	@Override
 	public void resetTab() {
 
+		// deselect all rows
+		this.table.getSelectionModel().clearSelection();
+
 		// titledpanes default expanded/collapsed display
-		this.updateOrDeleteTitledPane.setExpanded(true);
-		this.addTitledPane.setExpanded(false);
+		this.addTitledPane.setExpanded(true);
+		this.updateOrDeleteTitledPane.setExpanded(false);
 
 		// disable buttons by default
 		this.addBtn.setDisable(true);
@@ -122,7 +126,7 @@ public class GameView extends OnlineGameTrackerView {
 		this.table.getSelectionModel().selectedItemProperty().addListener(e -> {
 
 			// to prevent errors, when removing all items from table
-			if (this.table.getItems().size() > 0) {
+			if (this.table.getItems().size() > 0 && this.table.getSelectionModel().getSelectedItem() != null) {
 
 				// switch focus to the update/delete titled pane
 				this.updateOrDeleteTitledPane.setExpanded(true);
@@ -131,6 +135,8 @@ public class GameView extends OnlineGameTrackerView {
 				// enable buttons to interact with selected record
 				this.updateBtn.setDisable(false);
 				this.deleteBtn.setDisable(false);
+
+				// enable TextFields so that the selected row can be edited
 				this.gameTitleModifyTF.setDisable(false);
 
 				// clear and hide previous message when selecting new record
@@ -138,7 +144,7 @@ public class GameView extends OnlineGameTrackerView {
 				this.updateOrDeleteMsgLblHBox.setManaged(false);
 
 				// populate textfields with data from selected table row
-				GameModel tmpGame = this.table.getSelectionModel().getSelectedItem();
+				Game tmpGame = this.table.getSelectionModel().getSelectedItem();
 				this.gameIdModifyTF.setText(tmpGame.getGameId() + "");
 				this.gameTitleModifyTF.setText(tmpGame.getGameTitle());
 			}
@@ -172,7 +178,8 @@ public class GameView extends OnlineGameTrackerView {
 				this.addMsgLabel
 						.setText("Successfully added '" + this.gameTitleInputTF.getText() + "' to the Game table.");
 			} else {
-				this.addMsgLabel.setText("Faild to add '" + this.gameTitleInputTF.getText() + "' to the Game table.");
+				this.addMsgLabel.setText("Failed to add '" + this.gameTitleInputTF.getText()
+						+ "' to the Game table. It already exists within the Game table.");
 			}
 
 			this.addMsgLblHBox.setManaged(true);
@@ -208,8 +215,9 @@ public class GameView extends OnlineGameTrackerView {
 						.setText(String.format("Successfully updated game #%s to '%s' in the Game table.",
 								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
 			} else {
-				this.updateOrDeleteMsgLabel.setText(String.format("Failed to update game #%s: '%s' in the Game table.",
-						this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
+				this.updateOrDeleteMsgLabel.setText(
+						String.format("Failed to update game #%s: '%s' in the Game table. Game titles must be unique!",
+								this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText()));
 			}
 			this.updateOrDeleteMsgLblHBox.setManaged(true);
 
@@ -228,7 +236,8 @@ public class GameView extends OnlineGameTrackerView {
 	 * Updates the table after a change has been made.
 	 */
 	private void updateTable() {
-		this.table.getItems().clear();
+		if (this.table.getItems().size() > 0)
+			this.table.getItems().clear();
 		this.table.getItems().addAll(gc.selectAll());
 	}
 
@@ -237,8 +246,10 @@ public class GameView extends OnlineGameTrackerView {
 	 */
 	private void addContentsToContainers() {
 		// table view
-		this.table = new TableView<GameModel>();
+		this.table = new TableView<Game>();
 		this.table.getColumns().addAll(this.gameIdColumn, this.gameTitleColumn);
+		this.gameIdColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.25));
+		this.gameTitleColumn.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));
 		this.tabBodyVBox.getChildren().add(0, this.table);
 
 		// update/delete box
@@ -259,12 +270,10 @@ public class GameView extends OnlineGameTrackerView {
 		// Table Columns
 		// -----------------------------------------------------------------------------------------
 		this.gameIdColumn = new TableColumn<>("Game Id");
-		this.gameIdColumn.setMinWidth(100);
 		// NOTE: the property name comes from Model, not the column (diff name)
 		this.gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
 		// -----------------------------------------------------------------------------------------
 		this.gameTitleColumn = new TableColumn<>("Game Title");
-		this.gameTitleColumn.setMinWidth(300);
 		this.gameTitleColumn.setCellValueFactory(new PropertyValueFactory<>("gameTitle"));
 
 		// Textfields

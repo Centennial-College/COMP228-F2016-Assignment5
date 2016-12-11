@@ -1,24 +1,28 @@
-package exercise1;
+package models;
 
 /**
  * @file PlayerAndGame.java
  * @author Kevin Ma | #: 300867968
- * @date December 3, 2016
- * @version 0.2.0 added models corresponding to the tables in the database
+ * @date December 10, 2016
+ * @version 0.5.1 updated Models comments
  * @description This class is a model for the PlayerAndGame table in the
  *              database.
  * 
  */
 
-public class PlayerAndGameModel {
-	// instance variables
+public class PlayerAndGame {
+	// INSTANCE VARIABLES
+	// =============================================================================================
 	private int playerGameId;
 	private int gameId;
 	private int playerId;
 	private String playingDate;
 	private String score;
+	private Player player; // used to extract information to display
+	private Game game; // used to extract information to display
 
-	// Public Properties
+	// PUBLIC PROPERTIES
+	// =============================================================================================
 	// NOTE: only getters to prevent breaking of referential integrity
 	public int getPlayerGameId() {
 		return playerGameId;
@@ -40,8 +44,9 @@ public class PlayerAndGameModel {
 		return score;
 	}
 
-	// constructor
-	public PlayerAndGameModel(int playerGameId, int gameId, int playerId, String playingDate, String score) {
+	// CONSTRUCTOR
+	// =============================================================================================
+	public PlayerAndGame(int playerGameId, int gameId, int playerId, String playingDate, String score) {
 		this.playerGameId = playerGameId;
 		this.gameId = gameId;
 		this.playerId = playerId;
