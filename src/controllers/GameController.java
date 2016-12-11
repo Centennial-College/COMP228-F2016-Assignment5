@@ -9,8 +9,9 @@ import models.Game;
 /**
  * @file GameController.java
  * @author Kevin Ma | #: 300867968
- * @date December 9, 2016
- * @version 0.5.4 added prevention of adding multiple games with the same title
+ * @date December 11, 2016
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This class defines the behaviors of the Game view for this
  *              application at a micro level.
  */
@@ -120,7 +121,10 @@ public class GameController extends OnlineGameTrackerController {
 
 	/**
 	 * Deletes the row in the Game table that has a matching game_id as the
-	 * parameter. Don't need game_title because game_id is the primary key.
+	 * parameter. Don't need game_title because game_id is the primary key. If
+	 * this game_id is found to be in PlayerAndGame as well, all records
+	 * containing the game with the parameter id will be removed from the
+	 * PlayerAndGame table first to maintain referential integrity.
 	 * 
 	 * @param id
 	 *            the game_id of the row to be deleted
@@ -128,6 +132,13 @@ public class GameController extends OnlineGameTrackerController {
 	 */
 	public boolean deleteGame(int id) {
 		try {
+			// remove all records from PlayerAndGame that include this Game
+			db.pst = db.conn.prepareStatement(
+					"delete from [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame] where game_id = ?");
+			db.pst.setInt(1, id);
+			db.pst.executeUpdate();
+
+			// remove the Game from Game table
 			db.pst = db.conn
 					.prepareStatement("delete from [COMP228-F2016-OnlineGameTracker].[dbo].[Game] where game_id = ?");
 			db.pst.setInt(1, id);

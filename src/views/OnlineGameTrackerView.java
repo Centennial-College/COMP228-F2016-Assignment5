@@ -1,18 +1,23 @@
 package views;
 
+import java.util.Optional;
+
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
  * @file OnlineGameTrackerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 8, 2016
- * @version 0.4.1 added controls to GameView, updated OnlineGameTrackerView
+ * @date December 11, 2016
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This abstract class defines the structure and behaviors of views
  *              for this application at a macro level.
  */
@@ -28,6 +33,8 @@ public abstract class OnlineGameTrackerView {
 	protected HBox updateOrDeleteControlsHBox; // container level 3
 	protected HBox updateOrDeleteMsgLblHBox; // container level 3
 	protected Label updateOrDeleteMsgLabel; // provides visual feedback
+	protected Alert deleteConfirmationAlert;
+	protected Optional<ButtonType> confirmationResult;
 	// ---------------------------------------------------------------------------------------------
 	protected TitledPane addTitledPane;
 	protected VBox addBodyVBox; // container level 2
@@ -42,6 +49,11 @@ public abstract class OnlineGameTrackerView {
 		this.updateOrDeleteTitledPane = new TitledPane("Update/Remove a [" + tabName + "]",
 				this.updateOrDeleteBodyVBox);
 		this.addTitledPane = new TitledPane("Add a [" + tabName + "]", this.addBodyVBox);
+
+		this.deleteConfirmationAlert = new Alert(AlertType.CONFIRMATION);
+		this.deleteConfirmationAlert.setTitle("Delete Confirmation");
+		this.deleteConfirmationAlert.setHeaderText("Are you sure you want to delete this [" + tabName + "] record?");
+
 		this.start();
 	}
 

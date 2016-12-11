@@ -3,6 +3,7 @@ package views;
 import controllers.GameController;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -13,9 +14,9 @@ import models.Game;
 /**
  * @file GameView.java
  * @author Kevin Ma | #: 300867968
- * @date December 10, 2016
- * @version 0.6.1 implemented Tabs automatically resetting when switching to
- *          different tab
+ * @date December 11, 2016
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This class defines the structure and behaviors of the Game view
  *              for this application at a micro level.
  */
@@ -191,23 +192,34 @@ public class GameView extends OnlineGameTrackerView {
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
-			if (gc.deleteGame(Integer.parseInt(this.gameIdModifyTF.getText()))) {
-				this.updateOrDeleteMsgLabel.setText("Successfully deleted game #" + this.gameIdModifyTF.getText() + " '"
-						+ this.gameTitleModifyTF.getText() + "' from the Game table.");
-			} else {
-				this.updateOrDeleteMsgLabel.setText("Failed to delete game #" + this.gameIdModifyTF.getText() + " '"
-						+ this.gameTitleModifyTF.getText() + "' from the Game table.");
+
+			// Ensures the user knows what will happen before proceeding with
+			// the action
+			this.deleteConfirmationAlert.setContentText(String.format(
+					"The game [#%s- %s] will be removed from the database.%n%nThis will remove all records in PlayerAndGame table that contain this game_id [%s] as well.%n%nAre you sure this is what you want to do?",
+					this.gameIdModifyTF.getText(), this.gameTitleModifyTF.getText(), this.gameIdModifyTF.getText()));
+			this.confirmationResult = this.deleteConfirmationAlert.showAndWait();
+
+			if (this.confirmationResult.get() == ButtonType.OK) {
+
+				if (gc.deleteGame(Integer.parseInt(this.gameIdModifyTF.getText()))) {
+					this.updateOrDeleteMsgLabel.setText("Successfully deleted game #" + this.gameIdModifyTF.getText()
+							+ " '" + this.gameTitleModifyTF.getText() + "' from the Game table.");
+				} else {
+					this.updateOrDeleteMsgLabel.setText("Failed to delete game #" + this.gameIdModifyTF.getText() + " '"
+							+ this.gameTitleModifyTF.getText() + "' from the Game table.");
+				}
+				this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+				this.updateTable();
+
+				// prevents redoing same action
+				this.gameTitleModifyTF.clear();
+				this.gameIdModifyTF.clear();
+				this.gameTitleModifyTF.setDisable(true);
+				this.updateBtn.setDisable(true);
+				this.deleteBtn.setDisable(true);
 			}
-			this.updateOrDeleteMsgLblHBox.setManaged(true);
-
-			this.updateTable();
-
-			// prevents redoing same action
-			this.gameTitleModifyTF.clear();
-			this.gameIdModifyTF.clear();
-			this.gameTitleModifyTF.setDisable(true);
-			this.updateBtn.setDisable(true);
-			this.deleteBtn.setDisable(true);
 		});
 		this.updateBtn.setOnAction(e -> {
 			if (gc.updateGame(Integer.parseInt(this.gameIdModifyTF.getText()), this.gameTitleModifyTF.getText())) {

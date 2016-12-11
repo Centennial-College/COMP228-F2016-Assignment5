@@ -9,7 +9,10 @@ import controllers.PlayerController;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -29,7 +32,8 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 1.0.1 - updated PlayerAndGame View, now auto-syncs data accross views
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -56,8 +60,6 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 	// ---------------------------------------------------------------------------------------------
 	private TableColumn<PlayerAndGame, Integer> playerIdColumn;
 	private TableColumn<PlayerAndGame, Integer> gameIdColumn;
-	// private TableColumn<PlayerAndGame, String> playingDateColumn;
-	// private TableColumn<PlayerAndGame, String> scoreColumn;
 
 	// read - details
 	// ---------------------------------------------------------------------------------------------
@@ -359,34 +361,44 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		});
 
 		this.deleteBtn.setOnAction(e -> {
-			if (pgc.deletePlayerAndGame(focusedPlayer.getPlayerId(), focusedGame.getGameId())) {
 
-				this.updateOrDeleteMsgLabel.setText("Successfully removed '" + focusedGame.getGameTitle()
-						+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
-						+ focusedPlayer.getLastName() + ".");
-			} else {
-				this.updateOrDeleteMsgLabel.setText("Failed to  remove '" + focusedGame.getGameTitle()
-						+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
-						+ focusedPlayer.getLastName() + ".");
+			// Ensures the user knows what will happen before proceeding with
+			// the action
+			this.deleteConfirmationAlert.setContentText(String.format(
+					"The game [%s] will be removed from [%s %s]'s details.%n%nAre you sure this is what you want to do?",
+					focusedGame.getGameTitle(), focusedPlayer.getFirstName(), focusedPlayer.getLastName()));
+			this.confirmationResult = this.deleteConfirmationAlert.showAndWait();
+
+			if (this.confirmationResult.get() == ButtonType.OK) {
+				if (pgc.deletePlayerAndGame(focusedPlayer.getPlayerId(), focusedGame.getGameId())) {
+
+					this.updateOrDeleteMsgLabel.setText("Successfully removed '" + focusedGame.getGameTitle()
+							+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
+							+ focusedPlayer.getLastName() + ".");
+				} else {
+					this.updateOrDeleteMsgLabel.setText("Failed to  remove '" + focusedGame.getGameTitle()
+							+ "' from player #" + focusedPlayer.getPlayerId() + " " + focusedPlayer.getFirstName() + " "
+							+ focusedPlayer.getLastName() + ".");
+				}
+				this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+				this.updateTableAndComboBoxes();
+
+				// prevents redoing same action
+				this.gameTFMod.clear();
+				this.playerTFMod.clear();
+				this.playDateDPMod.setValue(null);
+				this.scoreTFMod.clear();
+				this.updateBtn.setDisable(true);
+				this.deleteBtn.setDisable(true);
+				this.playerIdLbl.setText("-");
+				this.fnameLbl.setText("-");
+				this.lnameLbl.setText("-");
+				this.gameIdLbl.setText("-");
+				this.gameTitleLbl.setText("-");
+				this.gameDateLbl.setText("-");
+				this.gameScoreLbl.setText("-");
 			}
-			this.updateOrDeleteMsgLblHBox.setManaged(true);
-
-			this.updateTableAndComboBoxes();
-
-			// prevents redoing same action
-			this.gameTFMod.clear();
-			this.playerTFMod.clear();
-			this.playDateDPMod.setValue(null);
-			this.scoreTFMod.clear();
-			this.updateBtn.setDisable(true);
-			this.deleteBtn.setDisable(true);
-			this.playerIdLbl.setText("-");
-			this.fnameLbl.setText("-");
-			this.lnameLbl.setText("-");
-			this.gameIdLbl.setText("-");
-			this.gameTitleLbl.setText("-");
-			this.gameDateLbl.setText("-");
-			this.gameScoreLbl.setText("-");
 		});
 
 		this.updateBtn.setOnAction(e -> {

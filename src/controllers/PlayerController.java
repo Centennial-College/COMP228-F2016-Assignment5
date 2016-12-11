@@ -9,8 +9,9 @@ import models.Player;
 /**
  * @file PlayerController.java
  * @author Kevin Ma | #: 300867968
- * @date December 10, 2016
- * @version 0.6.0 implemented Delete Player functionality, finished PlayerView
+ * @date December 11, 2016
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This class defines the behaviors of the Player view for this
  *              application at a micro level.
  */
@@ -176,7 +177,10 @@ public class PlayerController extends OnlineGameTrackerController {
 	/**
 	 * Deletes the row in the Player table that has a matching player_id as the
 	 * parameter. Don't need other details as parameters because player_id is
-	 * the primary key.
+	 * the primary key. If this player_id is found to be in PlayerAndGame as
+	 * well, all records containing the player with the parameter id will be
+	 * removed from the PlayerAndGame table first to maintain referential
+	 * integrity.
 	 * 
 	 * @param id
 	 *            the player_id of the row to be deleted
@@ -184,8 +188,15 @@ public class PlayerController extends OnlineGameTrackerController {
 	 */
 	public boolean deletePlayer(int id) {
 		try {
-			db.pst = db.conn
-					.prepareStatement("delete from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where player_id = ?");
+			// remove all records from PlayerAndGame that include this Player
+			db.pst = db.conn.prepareStatement(
+					"delete from [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame] where player_id = ?");
+			db.pst.setInt(1, id);
+			db.pst.executeUpdate();
+
+			// remove the Player from Player table
+			db.pst = db.conn.prepareStatement(
+					"delete from [COMP228-F2016-OnlineGameTracker].[dbo].[Player] where player_id = ?");
 			db.pst.setInt(1, id);
 			db.pst.executeUpdate();
 			return true;

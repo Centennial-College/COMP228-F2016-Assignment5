@@ -6,6 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -17,9 +18,9 @@ import models.Player;
 /**
  * @file PlayerView.java
  * @author Kevin Ma | #: 300867968
- * @date December 10, 2016
- * @version 0.6.1 implemented Tabs automatically resetting when switching to
- *          different tab
+ * @date December 11, 2016
+ * @version 1.1.0 - implemented deletion confirmation; updated deletion to
+ *          maintain referential integrity
  * @description This class defines the structure and behaviors of the Player
  *              view for this application at a micro level.
  */
@@ -294,39 +295,53 @@ public class PlayerView extends OnlineGameTrackerView {
 			this.addBtn.setDisable(true);
 		});
 		this.deleteBtn.setOnAction(e -> {
-			if (pc.deletePlayer(Integer.parseInt(this.playerIdModifyTF.getText()))) {
-				this.updateOrDeleteMsgLabel.setText("Successfully deleted player #" + this.playerIdModifyTF.getText()
-						+ " '" + this.playerFnameModifyTF.getText() + " " + this.playerLnameModifyTF.getText()
-						+ "' from the Player table.");
-			} else {
-				this.updateOrDeleteMsgLabel.setText("Failed to delete player #" + this.playerIdModifyTF.getText() + " '"
-						+ this.playerFnameModifyTF.getText() + " " + this.playerLnameModifyTF.getText()
-						+ "' from the Player table.");
+
+			// Ensures the user knows what will happen before proceeding with
+			// the action
+			this.deleteConfirmationAlert.setContentText(String.format(
+					"The player [%s %s] will be removed from the database.%n%nThis will remove all records in PlayerAndGame table that contain this player [ID #: %s] as well.%n%nAre you sure this is what you want to do?",
+					this.playerFnameModifyTF.getText(), this.playerLnameModifyTF.getText(),
+					this.playerIdModifyTF.getText()));
+			this.confirmationResult = this.deleteConfirmationAlert.showAndWait();
+
+			if (this.confirmationResult.get() == ButtonType.OK) {
+
+				if (pc.deletePlayer(Integer.parseInt(this.playerIdModifyTF.getText()))) {
+					this.updateOrDeleteMsgLabel.setText("Successfully deleted player #"
+							+ this.playerIdModifyTF.getText() + " '" + this.playerFnameModifyTF.getText() + " "
+							+ this.playerLnameModifyTF.getText() + "' from the Player table.");
+				} else {
+					this.updateOrDeleteMsgLabel.setText("Failed to delete player #" + this.playerIdModifyTF.getText()
+							+ " '" + this.playerFnameModifyTF.getText() + " " + this.playerLnameModifyTF.getText()
+							+ "' from the Player table.");
+				}
+				this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+				this.updateTable();
+
+				// prevents redoing same action
+				this.playerIdModifyTF.clear();
+				this.playerFnameModifyTF.clear();
+				this.playerLnameModifyTF.clear();
+				this.playerAddrModifyTF.clear();
+				this.playerPcodeModifyTF.clear();
+				this.playerProvModifyTF.clear();
+				this.playerPhoneModifyTF.clear();
+				this.playerIdModifyTF.setDisable(true);
+				this.playerFnameModifyTF.setDisable(true);
+				this.playerLnameModifyTF.setDisable(true);
+				this.playerAddrModifyTF.setDisable(true);
+				this.playerPcodeModifyTF.setDisable(true);
+				this.playerProvModifyTF.setDisable(true);
+				this.playerPhoneModifyTF.setDisable(true);
+				this.updateBtn.setDisable(true);
+				this.deleteBtn.setDisable(true);
 			}
-			this.updateOrDeleteMsgLblHBox.setManaged(true);
-
-			this.updateTable();
-
-			// prevents redoing same action
-			this.playerIdModifyTF.clear();
-			this.playerFnameModifyTF.clear();
-			this.playerLnameModifyTF.clear();
-			this.playerAddrModifyTF.clear();
-			this.playerPcodeModifyTF.clear();
-			this.playerProvModifyTF.clear();
-			this.playerPhoneModifyTF.clear();
-			this.playerIdModifyTF.setDisable(true);
-			this.playerFnameModifyTF.setDisable(true);
-			this.playerLnameModifyTF.setDisable(true);
-			this.playerAddrModifyTF.setDisable(true);
-			this.playerPcodeModifyTF.setDisable(true);
-			this.playerProvModifyTF.setDisable(true);
-			this.playerPhoneModifyTF.setDisable(true);
-			this.updateBtn.setDisable(true);
-			this.deleteBtn.setDisable(true);
 		});
 
-		this.updateBtn.setOnAction(e -> {
+		this.updateBtn.setOnAction(e ->
+
+		{
 			if (pc.updatePlayer(Integer.parseInt(this.playerIdModifyTF.getText()), this.playerFnameModifyTF.getText(),
 					this.playerLnameModifyTF.getText(), this.playerAddrModifyTF.getText(),
 					this.playerPcodeModifyTF.getText(), this.playerProvModifyTF.getText(),
