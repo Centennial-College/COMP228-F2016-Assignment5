@@ -29,7 +29,7 @@ import models.PlayerAndGame;
  * @file PlayerAndGameView.java
  * @author Kevin Ma | #: 300867968
  * @date December 11, 2016
- * @version 0.6.5 added event handlers for modification fields
+ * @version 0.6.6 added update functionality for PlayerAndGame
  * @description This class defines the structure and behaviors of the
  *              PlayerAndGame view for this application at a micro level.
  */
@@ -324,12 +324,6 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			if (pgc.insertIntoPlayerAndGame(g.getGameId(), p.getPlayerId(), this.playDateDPIn.getValue().toString(),
 					this.scoreTFIn.getText())) {
 
-				// if (pc.insertIntoPlayer(this.playerFnameInputTF.getText(),
-				// this.playerLnameInputTF.getText(),
-				// this.playerAddrInputTF.getText(),
-				// this.playerPcodeInputTF.getText(),
-				// this.playerProvInputTF.getText(),
-				// this.playerPhoneInputTF.getText())) {
 				this.addMsgLabel.setText("Successfully added '" + g.getGameTitle() + " - " + p.getFirstName() + " "
 						+ p.getLastName() + "' to the PlayerAndGame table.");
 			} else {
@@ -346,14 +340,7 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 			this.playersCB.getSelectionModel().clearSelection();
 			this.playDateDPIn.setValue(null);
 			this.scoreTFIn.setText(null);
-			// this.playerFnameInputTF.clear();
-			// this.playerLnameInputTF.clear();
-			// this.playerAddrInputTF.clear();
-			// this.playerPcodeInputTF.clear();
-			// this.playerProvInputTF.clear();
-			// this.playerPhoneInputTF.clear();
 			this.addBtn.setDisable(true);
-
 		});
 
 		// this.deleteBtn.setOnAction(e -> {
@@ -394,48 +381,29 @@ public class PlayerAndGameView extends OnlineGameTrackerView {
 		// this.updateBtn.setDisable(true);
 		// this.deleteBtn.setDisable(true);
 		// });
-		//
-		// this.updateBtn.setOnAction(e -> {
-		// if
-		// (pc.updatePlayer(Integer.parseInt(this.playerIdModifyTF.getText()),
-		// this.playerFnameModifyTF.getText(),
-		// this.playerLnameModifyTF.getText(),
-		// this.playerAddrModifyTF.getText(),
-		// this.playerPcodeModifyTF.getText(),
-		// this.playerProvModifyTF.getText(),
-		// this.playerPhoneModifyTF.getText())) {
-		// this.updateOrDeleteMsgLabel
-		// .setText(String.format("Successfully updated details for player #%s
-		// in the Player table.",
-		// this.playerIdColumn.getText()));
-		// } else {
-		// this.updateOrDeleteMsgLabel.setText(
-		// String.format("Failed to update player #%s in the Player table.
-		// Players must be unique!",
-		// this.playerIdModifyTF.getText()));
-		// }
-		// this.updateOrDeleteMsgLblHBox.setManaged(true);
-		//
-		// this.updateTable();
-		//
-		// // prevents redoing same action
-		// this.playerIdModifyTF.clear();
-		// this.playerFnameModifyTF.clear();
-		// this.playerLnameModifyTF.clear();
-		// this.playerAddrModifyTF.clear();
-		// this.playerPcodeModifyTF.clear();
-		// this.playerProvModifyTF.clear();
-		// this.playerPhoneModifyTF.clear();
-		// this.playerIdModifyTF.setDisable(true);
-		// this.playerFnameModifyTF.setDisable(true);
-		// this.playerLnameModifyTF.setDisable(true);
-		// this.playerAddrModifyTF.setDisable(true);
-		// this.playerPcodeModifyTF.setDisable(true);
-		// this.playerProvModifyTF.setDisable(true);
-		// this.playerPhoneModifyTF.setDisable(true);
-		// this.updateBtn.setDisable(true);
-		// this.deleteBtn.setDisable(true);
-		// });
+
+		this.updateBtn.setOnAction(e -> {
+			if (pgc.updatePlayerAndGame(this.playDateDPMod.getValue().toString(), this.scoreTFMod.getText(),
+					focusedPlayer.getPlayerId(), focusedGame.getGameId())) {
+				this.updateOrDeleteMsgLabel
+						.setText(String.format("Successfully updated details for player #%d and '%s'.",
+								focusedPlayer.getPlayerId(), focusedGame.getGameTitle()));
+			} else {
+				this.updateOrDeleteMsgLabel.setText(String.format("Failed to update details for player #%d and '%s'.",
+						focusedPlayer.getPlayerId(), focusedGame.getGameTitle()));
+			}
+			this.updateOrDeleteMsgLblHBox.setManaged(true);
+
+			this.updateTableAndComboBoxes();
+
+			// prevents redoing same action
+			this.gameTFMod.clear();
+			this.playerTFMod.clear();
+			this.playDateDPMod.setValue(null);
+			this.scoreTFMod.clear();
+			this.updateBtn.setDisable(true);
+			this.deleteBtn.setDisable(true);
+		});
 	}
 
 	/**

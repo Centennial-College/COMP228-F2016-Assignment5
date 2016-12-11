@@ -48,20 +48,15 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 		playerAndGameList = FXCollections.observableArrayList();
 
 		try {
-			// db.pst = db.conn.prepareStatement("select * from
-			// [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame];");
 			db.pst = db.conn.prepareStatement("SELECT * FROM [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame];");
 			db.rs = db.pst.executeQuery();
 			while (db.rs.next()) {
-				// System.out.println("ID #3 " + db.rs.getInt(3));
 				playerAndGameRecord = new PlayerAndGame(db.rs.getInt(2), db.rs.getInt(3));
 				playerAndGameRecord.setPlayingDate(db.rs.getString(4));
 				playerAndGameRecord.setScore(db.rs.getString(5));
-				// playerAndGameRecord.setGame(this.selectAGame(playerAndGameRecord.getGameId()));
-				// playerAndGameRecord.setPlayer(this.selectAPlayer(playerAndGameRecord.getPlayerId()));
 				playerAndGameList.add(playerAndGameRecord);
 			}
-			
+
 			return playerAndGameList;
 		} catch (SQLException e) {
 			return null;
@@ -118,6 +113,21 @@ public class PlayerAndGameController extends OnlineGameTrackerController {
 			return null;
 		} catch (SQLException e) {
 			return null;
+		}
+	}
+
+	public boolean updatePlayerAndGame(String date, String score, int pid, int gid) {
+		try {
+			db.pst = db.conn.prepareStatement(
+					"update [COMP228-F2016-OnlineGameTracker].[dbo].[PlayerAndGame] set score= ?, playing_date =? where player_id = ? and game_id=?");
+			db.pst.setString(1, score);
+			db.pst.setString(2, date);
+			db.pst.setInt(3, pid);
+			db.pst.setInt(4, gid);
+			db.pst.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			return false;
 		}
 	}
 }
